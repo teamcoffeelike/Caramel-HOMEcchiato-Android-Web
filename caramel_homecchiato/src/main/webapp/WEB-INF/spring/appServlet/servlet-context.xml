@@ -24,6 +24,6 @@
 		<beans:property name="suffix" value=".jsp" />
 	</beans:bean>
 	
-	<context:component-scan base-package="com.hanul.coffelike" />
+	<context:component-scan base-package="com.hanul.coffeelike.caramelweb" />
 	
 </beans:beans>
