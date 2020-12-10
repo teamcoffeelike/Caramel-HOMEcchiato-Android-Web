@@ -27,7 +27,7 @@ public class UserController {
 		return GSON.toJson(o);
 	}
 	
-	//À¯ÀúÀÇ ÇÁ·ÎÇÊ ¿äÃ»
+	//ìœ ì €ì˜ í”„ë¡œí•„ ìš”ì²­
 	@ResponseBody
 	@RequestMapping("/profile")
 	public String profile(
@@ -41,7 +41,7 @@ public class UserController {
 		return GSON.toJson(o);
 	}
 	
-	//À¯Àú ¼³Á¤
+	//ìœ ì € ì„¤ì •
 	@ResponseBody
 	@RequestMapping("/userSettings")
 	public String userSettings(
@@ -54,7 +54,7 @@ public class UserController {
 		return GSON.toJson(o);
 	}
 	
-	//´Ğ³×ÀÓ ¼³Á¤
+	//ë‹‰ë„¤ì„ ì„¤ì •
 	@ResponseBody
 	@RequestMapping("/setName")
 	public String setName(
@@ -68,7 +68,7 @@ public class UserController {
 		return GSON.toJson(o);
 	}
 	
-	//ºñ¹Ğ¹øÈ£ Àç¼³Á¤
+	//ë¹„ë°€ë²ˆí˜¸ ì¬ì„¤ì •
 	@ResponseBody
 	@RequestMapping("/setPassword")
 	public String setPassword(

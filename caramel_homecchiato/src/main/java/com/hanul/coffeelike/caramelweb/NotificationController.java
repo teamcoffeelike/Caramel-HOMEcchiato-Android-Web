@@ -27,13 +27,13 @@ public class NotificationController {
 		return GSON.toJson(o);
 	}
 	
-	//¾Ë¸² ¼³Á¤
+	//ì•Œë¦¼ ì„¤ì •
 	@ResponseBody
 	@RequestMapping("/setNotification")
 	public String setNotification(
 			HttpSession session
-			// type : ( "reaction" | "like" | "follow" ) # ¾Ë¸² Á¾·ù
-			// value : ( "on" : "off" )                  # ¾Ë¸² ¼³Á¤°ª (¼³Á¤/ÇØÁ¦)
+			// type : ( "reaction" | "like" | "follow" ) # ì•Œë¦¼ ì¢…ë¥˜
+			// value : ( "on" : "off" )                  # ì•Œë¦¼ ì„¤ì •ê°’ (ì„¤ì •/í•´ì œ)
 	) {
 		JsonObject o = new JsonObject();
 		o.addProperty("success", "true");
@@ -42,7 +42,7 @@ public class NotificationController {
 		return GSON.toJson(o);
 	}
 	
-	//ÃÖ±ÙÈ°µ¿
+	//ìµœê·¼í™œë™
 	@ResponseBody
 	@RequestMapping("/notification")
 	public String notification(
@@ -55,14 +55,14 @@ public class NotificationController {
 		return GSON.toJson(o);
 	}
 	
-	//¾Ë¸²È®ÀÎ
+	//ì•Œë¦¼í™•ì¸
 	@ResponseBody
 	@RequestMapping("/markNotificationAsRead")
 	public String markNotificationAsRead(
 			HttpSession session,
 			@RequestParam int user
-			//type : ( "reaction" | "like" | "follow" ) # ¾Ë¸² Å¸ÀÔ
-			//date : <Int64>???   # ¾Ë¸² ³¯Â¥, notifyDate È®ÀÎ
+			//type : ( "reaction" | "like" | "follow" ) # ì•Œë¦¼ íƒ€ì…
+			//date : <Int64>???   # ì•Œë¦¼ ë‚ ì§œ, notifyDate í™•ì¸
 	) {
 		JsonObject o = new JsonObject();
 		o.addProperty("success", "true");

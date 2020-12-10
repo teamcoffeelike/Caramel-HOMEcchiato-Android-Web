@@ -12,29 +12,27 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.hanul.coffeelike.caramelweb.util.JsonHelper;
 
 @Controller
 public class JoinController {
 	private final Gson GSON = new GsonBuilder().create();
 
-	// success°¡ falseÀÎ °á°ú´Â ¸ğµÎ String Å¸ÀÔÀÇ error °ªÀ» °¡Áı´Ï´Ù.
+	// successê°€ falseì¸ ê²°ê³¼ëŠ” ëª¨ë‘ String íƒ€ì…ì˜ error ê°’ì„ ê°€ì§‘ë‹ˆë‹¤.
 	@ResponseBody
 	@ExceptionHandler(MissingServletRequestParameterException.class)
 	public String onException(MissingServletRequestParameterException ex) {
-		JsonObject o = new JsonObject();
-		o.addProperty("success", "false");
-		o.addProperty("error", "bad_parameter");
-
-		return GSON.toJson(o);
+		return JsonHelper.failure("bad_parameter");
 	}
 
-	// ÀÌ¸ŞÀÏÀ» »ç¿ëÇÑ È¸¿ø°¡ÀÔ
+	// ì´ë©”ì¼ì„ ì‚¬ìš©í•œ íšŒì›ê°€ì…
 	@ResponseBody
 	@RequestMapping("/joinWithEmail")
 	public String joinWithEmail(
 			HttpSession session, 
 			@RequestParam String email, 
 			@RequestParam String password) {
+		
 		JsonObject o = new JsonObject();
 		o.addProperty("success", "true");
 		o.addProperty("userId", 1231231323);
@@ -42,7 +40,7 @@ public class JoinController {
 		return GSON.toJson(o);
 	}
 
-	// Æù ¹øÈ£¸¦ »ç¿ëÇÑ È¸¿ø°¡ÀÔ
+	// í° ë²ˆí˜¸ë¥¼ ì‚¬ìš©í•œ íšŒì›ê°€ì…
 	@ResponseBody
 	@RequestMapping("/joinWithPhoneNumber")
 	public String joinWithPhoneNumber(
@@ -56,7 +54,7 @@ public class JoinController {
 		return GSON.toJson(o);
 	}
 
-	// Ä«Ä«¿À °èÁ¤ ¿¬µ¿À» »ç¿ëÇÑ È¸¿ø°¡ÀÔ
+	// ì¹´ì¹´ì˜¤ ê³„ì • ì—°ë™ì„ ì‚¬ìš©í•œ íšŒì›ê°€ì…
 	@ResponseBody
 	@RequestMapping("/joinWithKakao")
 	public String joinWithKakao(

@@ -29,7 +29,7 @@ public class PostController {
 		return GSON.toJson(o);
 	}
 	
-	//ÀÎ±âÆ÷½ºÆ®
+	//ì¸ê¸°í¬ìŠ¤íŠ¸
 	@ResponseBody
 	@RequestMapping("/topPosts")
 	public String topPosts(
@@ -42,7 +42,7 @@ public class PostController {
 		return GSON.toJson(o);
 	}
 	
-	//Æ÷½ºÆ® »ó¼¼
+	//í¬ìŠ¤íŠ¸ ìƒì„¸
 	@ResponseBody
 	@RequestMapping("/post")
 	public String post(
@@ -56,7 +56,7 @@ public class PostController {
 		return GSON.toJson(o);
 	}
 	
-	//Æ÷½ºÆ® ÀÛ¼º
+	//í¬ìŠ¤íŠ¸ ì‘ì„±
 	@ResponseBody
 	@RequestMapping("/writePost")
 	public String writePost(
@@ -71,7 +71,7 @@ public class PostController {
 		return GSON.toJson(o);
 	}
 	
-	//Æ÷½ºÆ® ¼öÁ¤
+	//í¬ìŠ¤íŠ¸ ìˆ˜ì •
 	@ResponseBody
 	@RequestMapping("/editPost")
 	public String editPost(
@@ -86,7 +86,7 @@ public class PostController {
 		return GSON.toJson(o);
 	}
 	
-	//Æ÷½ºÆ® »èÁ¦
+	//í¬ìŠ¤íŠ¸ ì‚­ì œ
 	@ResponseBody
 	@RequestMapping("/deletePost")
 	public String deletePost(
@@ -100,7 +100,7 @@ public class PostController {
 		return GSON.toJson(o);
 	}
 	
-	//Æ÷½ºÆ®¿¡ ´ñ±Û
+	//í¬ìŠ¤íŠ¸ì— ëŒ“ê¸€
 	@ResponseBody
 	@RequestMapping("/writeReaction")
 	public String writeReaction(
@@ -115,7 +115,7 @@ public class PostController {
 		return GSON.toJson(o);
 	}
 	
-	//´ñ±Û ¼öÁ¤
+	//ëŒ“ê¸€ ìˆ˜ì •
 	@ResponseBody
 	@RequestMapping("/editReaction")
 	public String editReaction(
@@ -130,7 +130,7 @@ public class PostController {
 		return GSON.toJson(o);
 	}
 	
-	//´ñ±Û »èÁ¦
+	//ëŒ“ê¸€ ì‚­ì œ
 	@ResponseBody
 	@RequestMapping("/removeReaction")
 	public String removeReaction(
@@ -144,7 +144,7 @@ public class PostController {
 		return GSON.toJson(o);
 	}
 	
-	//Æ÷½ºÆ® ÁÁ¾Æ¿ä
+	//í¬ìŠ¤íŠ¸ ì¢‹ì•„ìš”
 	@ResponseBody
 	@RequestMapping("/likePost")
 	public String likePost(

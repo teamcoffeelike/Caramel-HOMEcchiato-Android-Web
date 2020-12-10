@@ -2,6 +2,7 @@ package com.hanul.coffeelike.caramelweb;
 
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,24 +13,23 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.hanul.coffeelike.caramelweb.service.LoginService;
+import com.hanul.coffeelike.caramelweb.service.LoginService.LoginResult;
+import com.hanul.coffeelike.caramelweb.util.JsonHelper;
 
 @Controller
 public class LoginController {
-	private final Gson GSON = new GsonBuilder()
-			.create();
+	@Autowired
+	private LoginService loginService;
 	
-	//success°¡ falseÀÎ °á°ú´Â ¸ğµÎ String Å¸ÀÔÀÇ error °ªÀ» °¡Áı´Ï´Ù.
+	//successê°€ falseì¸ ê²°ê³¼ëŠ” ëª¨ë‘ String íƒ€ì…ì˜ error ê°’ì„ ê°€ì§‘ë‹ˆë‹¤.
 	@ResponseBody
 	@ExceptionHandler(MissingServletRequestParameterException.class)
 	public String onException(MissingServletRequestParameterException ex) {
-		JsonObject o = new JsonObject();
-		o.addProperty("success", "false");
-		o.addProperty("error", "bad_parameter");
-		
-		return GSON.toJson(o);
+		return JsonHelper.failure("bad_parameter");
 	}
 	
-	//ÀÌ¸ŞÀÏÀ» »ç¿ëÇÑ ·Î±×ÀÎ
+	//ì´ë©”ì¼ì„ ì‚¬ìš©í•œ ë¡œê·¸ì¸
 	@ResponseBody
 	@RequestMapping("/loginWithEmail")
 	public String loginWithEmail(
@@ -37,14 +37,14 @@ public class LoginController {
 			@RequestParam String email,
 			@RequestParam String password
 	) {
-		JsonObject o = new JsonObject();
-		o.addProperty("success", "true");
-		o.addProperty("userId", 1231231323);
-		
-		return GSON.toJson(o);
+		LoginResult result = loginService.loginWithEmail(email, password);
+		if(result.success()) {
+			session.setAttribute("loginUser", result.asSuccess().getUserId());
+		}
+		return result.toJson();
 	}
 	
-	//Æù ¹øÈ£¸¦ »ç¿ëÇÑ ·Î±×ÀÎ
+	//í° ë²ˆí˜¸ë¥¼ ì‚¬ìš©í•œ ë¡œê·¸ì¸
 	@ResponseBody
 	@RequestMapping("/loginWithPhoneNumber")
 	public String loginWithPhoneNumber(
@@ -59,7 +59,7 @@ public class LoginController {
 		return GSON.toJson(o);
 	}
 	
-	//Ä«Ä«¿À °èÁ¤ ¿¬µ¿À» »ç¿ëÇÑ ·Î±×ÀÎ
+	//ì¹´ì¹´ì˜¤ ê³„ì • ì—°ë™ì„ ì‚¬ìš©í•œ ë¡œê·¸ì¸
 	@ResponseBody
 	@RequestMapping("/loginWithKakao")
 	public String loginWithKakao(

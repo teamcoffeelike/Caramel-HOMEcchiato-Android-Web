@@ -29,7 +29,7 @@ public class RecipeController {
 		return GSON.toJson(o);
 	}
 	
-	//·¹½ÃÇÇ ¸®½ºÆ®
+	//ë ˆì‹œí”¼ ë¦¬ìŠ¤íŠ¸
 	@ResponseBody
 	@RequestMapping("/recipeList")
 	public String recipeList(
@@ -44,7 +44,7 @@ public class RecipeController {
 		return GSON.toJson(o);
 	}
 	
-	//·¹½ÃÇÇ
+	//ë ˆì‹œí”¼
 	@ResponseBody
 	@RequestMapping("/recipe")
 	public String recipe(
@@ -58,7 +58,7 @@ public class RecipeController {
 		return GSON.toJson(o);
 	}
 	
-	//·¹½ÃÇÇ ½ºÅÜ
+	//ë ˆì‹œí”¼ ìŠ¤í…
 	@ResponseBody
 	@RequestMapping("/recipeSteps")
 	public String recipeSteps(
@@ -72,14 +72,14 @@ public class RecipeController {
 		return GSON.toJson(o);
 	}
 	
-	//·¹½ÃÇÇ ÀÛ¼º
+	//ë ˆì‹œí”¼ ì‘ì„±
 	@ResponseBody
 	@RequestMapping("/writeRecipe")
 	public String writeRecipe(
 			HttpSession session,
 			@RequestParam String text,
 			@RequestParam File titleImage
-			//Ä«Å×°í¸®
+			//ì¹´í…Œê³ ë¦¬
 	) {
 		JsonObject o = new JsonObject();
 		o.addProperty("success", "true");
@@ -88,7 +88,7 @@ public class RecipeController {
 		return GSON.toJson(o);
 	}
 	
-	//·¹½ÃÇÇ ¼öÁ¤
+	//ë ˆì‹œí”¼ ìˆ˜ì •
 	@ResponseBody
 	@RequestMapping("/editRecipe")
 	public String editRecipe(
@@ -96,7 +96,7 @@ public class RecipeController {
 			@RequestParam int recipe,
 			@RequestParam String text,
 			@RequestParam File titleImage
-			//Ä«Å×°í¸®
+			//ì¹´í…Œê³ ë¦¬
 	) {
 		JsonObject o = new JsonObject();
 		o.addProperty("success", "true");
@@ -105,7 +105,7 @@ public class RecipeController {
 		return GSON.toJson(o);
 	}
 	
-	//·¹½ÃÇÇ »èÁ¦
+	//ë ˆì‹œí”¼ ì‚­ì œ
 	@ResponseBody
 	@RequestMapping("/deleteRecipe")
 	public String deleteRecipe(
@@ -119,7 +119,7 @@ public class RecipeController {
 		return GSON.toJson(o);
 	}
 	
-	//·¹½ÃÇÇ Æò°¡
+	//ë ˆì‹œí”¼ í‰ê°€
 	@ResponseBody
 	@RequestMapping("/rateRecipe")
 	public String rateRecipe(
