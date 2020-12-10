@@ -7,7 +7,7 @@
 	<artifactId>coffelike</artifactId>
 	<name>caramel_homecchiato</name>
 	<packaging>war</packaging>
-	<version>1.0.0-BUILD-SNAPSHOT</version>
+	<version>0.1.0-SNAPSHOT</version>
 	<properties>
 		<java-version>1.8</java-version>
 		<org.springframework-version>5.2.5.RELEASE</org.springframework-version>
@@ -220,8 +220,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.5.1</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.8</source>
+					<target>1.8</target>
 					<compilerArgument>-Xlint:all</compilerArgument>
 					<showWarnings>true</showWarnings>
 					<showDeprecation>true</showDeprecation>
