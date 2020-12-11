@@ -24,6 +24,17 @@ public class LoginService {
 		return new LoginSuccess(user.getId());
 	}
 	
+	public LoginResult loginWithPhoneNumber(
+			String phoneNumber,
+			String password
+	) {
+		UserLoginData user = dao.findUserWithPhoneNumber(phoneNumber);
+		if(user==null||!user.getPassword().equals(password)) {
+			return LoginFailure.LOGIN_FAILED;
+		}
+		return new LoginSuccess(user.getId());
+	}
+	
 	
 	public interface LoginResult {
 		boolean success();

@@ -14,7 +14,8 @@ public class LoginDAO {
 	public UserLoginData findUserWithEmail(String email) {
 		return sql.selectOne("login.findUserWithEmail", email);
 	}
-	
-	
-	
+
+	public UserLoginData findUserWithPhoneNumber(String phoneNumber) {
+		return sql.selectOne("login.findUserWithEmail", phoneNumber);
+	}
 }

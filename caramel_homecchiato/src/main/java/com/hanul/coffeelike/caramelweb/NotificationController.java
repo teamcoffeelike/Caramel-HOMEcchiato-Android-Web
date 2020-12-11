@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.hanul.coffeelike.caramelweb.util.JsonHelper;
 
 @Controller
 public class NotificationController {
@@ -20,11 +21,7 @@ public class NotificationController {
 	@ResponseBody
 	@ExceptionHandler(MissingServletRequestParameterException.class)
 	public String onException(MissingServletRequestParameterException ex) {
-		JsonObject o = new JsonObject();
-		o.addProperty("success", "false");
-		o.addProperty("error", "bad_parameter");
-		
-		return GSON.toJson(o);
+		return JsonHelper.failure("bad_parameter");
 	}
 	
 	//알림 설정

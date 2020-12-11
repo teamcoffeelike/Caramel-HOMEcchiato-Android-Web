@@ -22,14 +22,25 @@ public class LoginController {
 	@Autowired
 	private LoginService loginService;
 	
-	//success가 false인 결과는 모두 String 타입의 error 값을 가집니다.
 	@ResponseBody
 	@ExceptionHandler(MissingServletRequestParameterException.class)
 	public String onException(MissingServletRequestParameterException ex) {
 		return JsonHelper.failure("bad_parameter");
 	}
 	
-	//이메일을 사용한 로그인
+	/**
+	 * 이메일을 사용한 로그인<br>
+	 * <br>
+	 * <b>성공 시:</b>
+	 * <pre><code> {
+	 *   userId: Integer
+	 * }</code></pre>
+	 * 
+	 * <b>에러: </b><br>
+	 * bad_email    : 유효하지 않은 email 인자<br>
+	 * bad_password : 유효하지 않은 password 인자<br>
+	 * login_failed : 로그인 실패
+	 */
 	@ResponseBody
 	@RequestMapping("/loginWithEmail")
 	public String loginWithEmail(
@@ -43,8 +54,20 @@ public class LoginController {
 		}
 		return result.toJson();
 	}
-	
-	//폰 번호를 사용한 로그인
+
+	/**
+	 * 폰 사용한 로그인<br>
+	 * <br>
+	 * <b>성공 시:</b>
+	 * <pre><code> {
+	 *   userId: Integer
+	 * }</code></pre>
+	 * 
+	 * <b>에러: </b><br>
+	 * bad_phone_number : 유효하지 않은 phoneNumber 인자<br>
+	 * bad_password     : 유효하지 않은 password 인자<br>
+	 * login_failed     : 로그인 실패
+	 */
 	@ResponseBody
 	@RequestMapping("/loginWithPhoneNumber")
 	public String loginWithPhoneNumber(
@@ -52,11 +75,11 @@ public class LoginController {
 			@RequestParam String phoneNumber,
 			@RequestParam String password
 	) {
-		JsonObject o = new JsonObject();
-		o.addProperty("success", "true");
-		o.addProperty("userId", 1231231323);
-		
-		return GSON.toJson(o);
+		LoginResult result = loginService.loginWithPhoneNumber(phoneNumber, password);
+		if(result.success()) {
+			session.setAttribute("loginUser", result.asSuccess().getUserId());
+		}
+		return result.toJson();
 	}
 	
 	//카카오 계정 연동을 사용한 로그인
@@ -66,11 +89,8 @@ public class LoginController {
 			HttpSession session,
 			@RequestParam String kakaoLoginToken
 	) {
-		JsonObject o = new JsonObject();
-		o.addProperty("success", "true");
-		o.addProperty("token", 1231231323);
+		// TODO
 		
-		return GSON.toJson(o);
 	}
 	
 }
