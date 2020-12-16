@@ -1,18 +1,13 @@
 package com.hanul.coffeelike.caramelweb.data;
 
-public class User {
+public class UserSettingData {
 	
 	private int id;
-	//·Î±×ÀÎ µ¥ÀÌÅÍ
-	private String email;
-	private String phoneNumber;
-	private String kakaoAccountCi;
-	private String password;
-	//ÇÁ·ÎÇÊ
-	private String name;
-	private String motd;		//»óÅÂ¸Ş¼¼Áö
-	private int profileImage;
-	//¼¼ÆÃ
+	
+	private String name;	//ë‹‰ë„¤ì„
+	private String motd;	//ìê¸°ì†Œê°œ(ìƒíƒœë©”ì„¸ì§€)
+	private String profileImage;
+	//ì•Œë¦¼
 	private boolean notifyReactions;
 	private boolean notifyFollows;
 	private boolean notifyLikes;
@@ -23,30 +18,6 @@ public class User {
 	}
 	public void setId(int id) {
 		this.id = id;
-	}
-	public String getEmail() {
-		return email;
-	}
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	public String getPhoneNumber() {
-		return phoneNumber;
-	}
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
-	}
-	public String getKakaoAccountCi() {
-		return kakaoAccountCi;
-	}
-	public void setKakaoAccountCi(String kakaoAccountCi) {
-		this.kakaoAccountCi = kakaoAccountCi;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
 	}
 	public String getName() {
 		return name;
@@ -60,10 +31,10 @@ public class User {
 	public void setMotd(String motd) {
 		this.motd = motd;
 	}
-	public int getProfileImage() {
+	public String getProfileImage() {
 		return profileImage;
 	}
-	public void setProfileImage(int profileImage) {
+	public void setProfileImage(String profileImage) {
 		this.profileImage = profileImage;
 	}
 	public boolean isNotifyReactions() {
