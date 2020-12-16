@@ -3,7 +3,7 @@ package com.hanul.coffeelike.caramelweb.data;
 import org.springframework.lang.Nullable;
 
 /**
- * À¯ÀúÀÇ ·Î±×ÀÎ Ã¼Å©¿¡ ÇÊ¿äÇÑ µ¥ÀÌÅÍ
+ * ìœ ì €ì˜ ë¡œê·¸ì¸ ì²´í¬ì— í•„ìš”í•œ ë°ì´í„°
  */
 public class UserLoginData {
 	private int id;

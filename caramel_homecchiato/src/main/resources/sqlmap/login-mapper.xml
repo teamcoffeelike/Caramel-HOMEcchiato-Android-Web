@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="login">
+	<select id="findUserWithEmail" parameterType="String" resultType="UserLoginData">
+		SELECT id, email, phoneNumber, password
+		  FROM users
+		 WHERE email = #{it}
+	</select>
+	<select id="findUserWithPhoneNumber" parameterType="String" resultType="UserLoginData">
+		SELECT id, email, phoneNumber, password
+		  FROM users
+		 WHERE phoneNumber = #{it}
+	</select>
+	<select id="findUserWithKakaoUserId" parameterType="Long" resultType="Integer">
+		SELECT id
+		  FROM users
+		 WHERE kakaoAccountId = #{it}
+	</select>
+</mapper>

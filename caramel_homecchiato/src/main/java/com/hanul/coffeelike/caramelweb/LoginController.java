@@ -18,6 +18,7 @@ import com.hanul.coffeelike.caramelweb.service.LoginService.LoginResult;
 import com.hanul.coffeelike.caramelweb.util.HttpConnectionHelper;
 import com.hanul.coffeelike.caramelweb.util.HttpConnectionHelper.Response;
 import com.hanul.coffeelike.caramelweb.util.JsonHelper;
+import com.hanul.coffeelike.caramelweb.util.SessionAttributes;
 
 @Controller
 public class LoginController {
@@ -52,7 +53,7 @@ public class LoginController {
 			@RequestParam String email,
 			@RequestParam String password) {
 		LoginResult result = loginService.loginWithEmail(email, password);
-		if (result.success()) {
+		if (result.isSuccess()) {
 			session.setAttribute("loginUser", result.asSuccess().getUserId());
 		}
 		return result.toJson();
@@ -80,14 +81,14 @@ public class LoginController {
 			@RequestParam String phoneNumber,
 			@RequestParam String password) {
 		LoginResult result = loginService.loginWithPhoneNumber(phoneNumber, password);
-		if (result.success()) {
+		if (result.isSuccess()) {
 			session.setAttribute("loginUser", result.asSuccess().getUserId());
 		}
 		return result.toJson();
 	}
 
 	/**
-	 * # 카카오 계정 연동을 사용한 로그인<br>
+	 * 카카오 계정 연동을 사용한 로그인<br>
 	 * <br>
 	 * <b>성공 시:</b>
 	 * 
@@ -100,7 +101,6 @@ public class LoginController {
 	 * <b>에러: </b><br>
 	 * bad_kakao_login_token : 유효하지 않은 kakaoLoginToken 인자<br>
 	 * kakao_service_unavailable : 카카오 플랫폼 서비스의 일시적 문제 등으로 인해 서비스 제공이 불가<br>
-	 * : 로그인 실패<br>
 	 */
 	@ResponseBody
 	@RequestMapping("/loginWithKakao")
@@ -108,14 +108,21 @@ public class LoginController {
 			HttpSession session,
 			@RequestParam String kakaoLoginToken
 	) throws IOException {
-		// TODO
 		Response<JsonObject> response = HttpConnectionHelper.create("https://kapi.kakao.com/v1/user/access_token_info")
 				.setRequestMethod("GET")
 				.setRequestProperty("Content-type", "application/json")
 				.setRequestProperty("Authorization", "Bearer "+kakaoLoginToken)
 				.readAsJsonObject();
 		if(response.isSuccess()) {
-			// TODO take it to service
+			long kakaoUserId = response.getResponse().get("id").getAsLong();
+			LoginResult result = loginService.loginWithKakao(kakaoUserId);
+			if(result.isSuccess()) {
+				session.setAttribute(SessionAttributes.LOGIN_USER, result.asSuccess().getUserId());
+				return result.toJson();
+			}
+
+			// TODO 새 유저로 회원가입
+			return JsonHelper.failure("unknown");
 		}else{
 			int errorCode = response.getResponse().get("code").getAsInt();
 			switch(errorCode) {

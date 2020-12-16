@@ -12,10 +12,7 @@ public class LoginService {
 	@Autowired
 	private LoginDAO dao;
 	
-	public LoginResult loginWithEmail(
-			String email,
-			String password
-	) {
+	public LoginResult loginWithEmail(String email, String password) {
 		UserLoginData user = dao.findUserWithEmail(email);
 		if(user==null||!user.getPassword().equals(password)) {
 			return LoginFailure.LOGIN_FAILED;
@@ -23,10 +20,7 @@ public class LoginService {
 		return new LoginSuccess(user.getId());
 	}
 	
-	public LoginResult loginWithPhoneNumber(
-			String phoneNumber,
-			String password
-	) {
+	public LoginResult loginWithPhoneNumber(String phoneNumber, String password) {
 		UserLoginData user = dao.findUserWithPhoneNumber(phoneNumber);
 		if(user==null||!user.getPassword().equals(password)) {
 			return LoginFailure.LOGIN_FAILED;
@@ -34,9 +28,17 @@ public class LoginService {
 		return new LoginSuccess(user.getId());
 	}
 	
+	public LoginResult loginWithKakao(long kakaoUserId) {
+		Integer userId = dao.findUserWithKakaoUserId(kakaoUserId);
+		if(userId==null) {
+			return LoginFailure.LOGIN_FAILED;
+		}
+		return new LoginSuccess(userId);
+	}
+	
 	
 	public interface LoginResult {
-		boolean success();
+		boolean isSuccess();
 		String toJson();
 		
 		default LoginSuccess asSuccess() {
@@ -55,7 +57,7 @@ public class LoginService {
 		}
 
 		@Override
-		public boolean success() {
+		public boolean isSuccess() {
 			return true;
 		}
 		
@@ -75,7 +77,7 @@ public class LoginService {
 		LOGIN_FAILED;
 
 		@Override
-		public boolean success() {
+		public boolean isSuccess() {
 			return false;
 		}
 		@Override
