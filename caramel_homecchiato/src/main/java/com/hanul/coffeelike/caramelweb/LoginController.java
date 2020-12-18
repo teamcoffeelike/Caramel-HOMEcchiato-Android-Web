@@ -1,9 +1,8 @@
 package com.hanul.coffeelike.caramelweb;
 
-import java.io.IOException;
-
 import javax.servlet.http.HttpSession;
 
+import com.hanul.coffeelike.caramelweb.service.LoginService.LoginSuccess;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -12,13 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.google.gson.JsonObject;
 import com.hanul.coffeelike.caramelweb.service.LoginService;
 import com.hanul.coffeelike.caramelweb.service.LoginService.LoginResult;
-import com.hanul.coffeelike.caramelweb.util.HttpConnectionHelper;
-import com.hanul.coffeelike.caramelweb.util.HttpConnectionHelper.Response;
 import com.hanul.coffeelike.caramelweb.util.JsonHelper;
-import com.hanul.coffeelike.caramelweb.util.SessionAttributes;
 
 @Controller
 public class LoginController {
@@ -53,8 +48,8 @@ public class LoginController {
 			@RequestParam String email,
 			@RequestParam String password) {
 		LoginResult result = loginService.loginWithEmail(email, password);
-		if (result.isSuccess()) {
-			session.setAttribute("loginUser", result.asSuccess().getUserId());
+		if (result instanceof LoginSuccess) {
+			session.setAttribute("loginUser", ((LoginSuccess)result).getUserId());
 		}
 		return result.toJson();
 	}
@@ -81,60 +76,9 @@ public class LoginController {
 			@RequestParam String phoneNumber,
 			@RequestParam String password) {
 		LoginResult result = loginService.loginWithPhoneNumber(phoneNumber, password);
-		if (result.isSuccess()) {
-			session.setAttribute("loginUser", result.asSuccess().getUserId());
+		if (result instanceof LoginSuccess) {
+			session.setAttribute("loginUser", ((LoginSuccess)result).getUserId());
 		}
 		return result.toJson();
-	}
-
-	/**
-	 * 카카오 계정 연동을 사용한 로그인<br>
-	 * <br>
-	 * <b>성공 시:</b>
-	 * 
-	 * <pre>
-	 * <code> {
-	 *   userId: Integer
-	 * }</code>
-	 * </pre>
-	 * 
-	 * <b>에러: </b><br>
-	 * bad_kakao_login_token : 유효하지 않은 kakaoLoginToken 인자<br>
-	 * kakao_service_unavailable : 카카오 플랫폼 서비스의 일시적 문제 등으로 인해 서비스 제공이 불가<br>
-	 */
-	@ResponseBody
-	@RequestMapping("/loginWithKakao")
-	public String loginWithKakao(
-			HttpSession session,
-			@RequestParam String kakaoLoginToken
-	) throws IOException {
-		Response<JsonObject> response = HttpConnectionHelper.create("https://kapi.kakao.com/v1/user/access_token_info")
-				.setRequestMethod("GET")
-				.setRequestProperty("Content-type", "application/json")
-				.setRequestProperty("Authorization", "Bearer "+kakaoLoginToken)
-				.readAsJsonObject();
-		if(response.isSuccess()) {
-			long kakaoUserId = response.getResponse().get("id").getAsLong();
-			LoginResult result = loginService.loginWithKakao(kakaoUserId);
-			if(result.isSuccess()) {
-				session.setAttribute(SessionAttributes.LOGIN_USER, result.asSuccess().getUserId());
-				return result.toJson();
-			}
-
-			// TODO 새 유저로 회원가입
-			return JsonHelper.failure("unknown");
-		}else{
-			int errorCode = response.getResponse().get("code").getAsInt();
-			switch(errorCode) {
-			case -1: // 카카오 사망
-				return JsonHelper.failure("kakao_service_unavailable");
-			case -2: // 몬가이상함
-			case -401: // 만료됨
-				return JsonHelper.failure("bad_kakao_login_token");
-			default:
-				// TODO 카카오 로그아웃?
-				return JsonHelper.failure("unknown");
-			}
-		}
 	}
 }

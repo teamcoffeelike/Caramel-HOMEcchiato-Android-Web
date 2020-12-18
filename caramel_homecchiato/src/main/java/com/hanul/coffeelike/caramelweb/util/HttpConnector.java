@@ -16,12 +16,12 @@ import com.google.gson.JsonObject;
  * 외부 서버로의 HTTP 연결을 쉽게 핸들링하는 유틸리티 클래스.
  *
  */
-public class HttpConnectionHelper implements AutoCloseable {
-	public static HttpConnectionHelper create(String url) throws IOException {
+public class HttpConnector implements AutoCloseable {
+	public static HttpConnector create(String url) throws IOException {
 		try {
 			URL u = new URL(url);
 			HttpURLConnection c = (HttpURLConnection) u.openConnection();
-			return new HttpConnectionHelper(c);
+			return new HttpConnector(c);
 		} catch (MalformedURLException | ClassCastException ex) {
 			throw new IllegalArgumentException("'" + url + "' is not a valid HTTP URL", ex);
 		}
@@ -29,16 +29,16 @@ public class HttpConnectionHelper implements AutoCloseable {
 
 	private HttpURLConnection connection;
 
-	private HttpConnectionHelper(HttpURLConnection connection) {
+	private HttpConnector(HttpURLConnection connection) {
 		this.connection = connection;
 	}
 
-	public HttpConnectionHelper setRequestMethod(String method) throws ProtocolException {
+	public HttpConnector setRequestMethod(String method) throws ProtocolException {
 		connection.setRequestMethod(method);
 		return this;
 	}
 
-	public HttpConnectionHelper setRequestProperty(String key, String value) {
+	public HttpConnector setRequestProperty(String key, String value) {
 		connection.setRequestProperty(key, value);
 		return this;
 	}
@@ -131,6 +131,13 @@ public class HttpConnectionHelper implements AutoCloseable {
 		
 		public boolean isSuccess() {
 			return responseCode>=200&&responseCode<300;
+		}
+
+		@Override public String toString(){
+			return "Response{"+
+					"responseCode="+responseCode+
+					", response="+response+
+					'}';
 		}
 	}
 }
