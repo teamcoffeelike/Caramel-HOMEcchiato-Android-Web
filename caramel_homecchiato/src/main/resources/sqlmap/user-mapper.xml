@@ -4,9 +4,63 @@
 <mapper namespace="user">
 
 	<select id="userSettings" resultType="UserSettingData">
-		SELECT *
+		SELECT id,
+			   name,
+			   motd,
+			   profileImage,
+			   notifyReactions,
+			   notifyLikes,
+			   notifyFollows
 		FROM users
 		WHERE id = #{id}
 	</select>
+	
+	<select id="selectProfile"
+			parameterType="Integer"
+			resultType="UserProfileData">
+		SELECT id,
+		       name,
+		       motd,
+		       profileImage,
+		       (SELECT COUNT(following)
+		          FROM follows
+		         WHERE userId = #{you}
+		           AND following = #{id}) isFollowedByYou,
+		       (SELECT COUNT(userId)
+		      	  FROM follows
+		         WHERE following = #{you}
+		      	   AND userId = #{id}) isFollowingYou
+		  FROM users
+		 WHERE id = #{id}
+	</select>
+	
+	<update id="setName">
+		UPDATE users 
+		   SET name = #{name}
+		 WHERE id = #{id}	
+	</update>
+
+	<update id="setPassword">
+		UPDATE users 
+		   SET password = #{newPassword}
+		 WHERE id = #{userId}	
+	</update>
+	
+	<select id="getUserPasswordById">
+		SELECT password
+		  FROM users
+		 WHERE id = #{userId}
+	</select>
+	
+	<insert id="follow">
+		INSERT INTO follows(userId, following)
+		VALUES (#{loginUser}, #{followingId})
+	</insert>
+	
+	<delete id="unfollow">
+		DELETE FROM follows
+		 WHERE id = #{loginUser} 
+		   AND follow = #{followingId}
+	</delete>
 	
 </mapper>
