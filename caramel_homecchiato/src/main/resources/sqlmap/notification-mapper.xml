@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="notification">
+    <!--
+        SelectNotification
+        어차피 Service 내부에서 3개의 select문 병합 후 정렬하기 때문에 일부러 정렬하지 않음
+    -->
+
+    <sql id="selectNotified">
+        SELECT *
+          FROM ${table}
+         WHERE notifiedUser = #{user}
+           AND notified = 'Y'
+    </sql>
+
+    <select id="selectNotifiedFollows"
+            parameterType="Integer"
+            resultType="FollowNotification">
+        <include refid="selectNotified">
+            <property name="table" value="followNotifications"/>
+        </include>
+    </select>
+
+    <select id="selectNotifiedLikes"
+            parameterType="Integer"
+            resultType="LikeNotification">
+        <include refid="selectNotified">
+            <property name="table" value="likeNotifications"/>
+        </include>
+    </select>
+
+    <select id="selectNotifiedReactions"
+            parameterType="Integer"
+            resultType="ReactionNotification">
+        <include refid="selectNotified">
+            <property name="table" value="reactionNotifications"/>
+        </include>
+    </select>
+
+    <!--
+        notify
+        알림을 notified 상태로 전환합니다. 이 상태의 알림은 Push Notification에 표시됩니다.
+    -->
+
+    <sql id="anHourPassed">
+        SYSDATE - notifyDate >= to_date('1', 'hh')
+    </sql>
+
+    <select id="getUsersNotified" resultType="Integer">
+        SELECT DISTINCT notifiedUser
+          FROM followNotifications
+         WHERE notified = 'N'
+           AND wasFollower = 'N'
+           AND <include refid="anHourPassed"/>
+        UNION
+        SELECT DISTINCT notifiedUser
+          FROM likeNotifications
+         WHERE notified = 'N'
+           AND wasLiked = 'N'
+           AND <include refid="anHourPassed"/>
+        UNION
+        SELECT DISTINCT notifiedUser
+          FROM reactionNotifications
+         WHERE notified = 'N'
+           AND <include refid="anHourPassed"/>
+    </select>
+
+    <update id="notifyFollow">
+        UPDATE followNotifications
+           SET notified = 'Y'
+         WHERE notified = 'N'
+           AND wasFollower = 'N'
+           AND <include refid="anHourPassed"/>
+    </update>
+
+    <update id="notifyLike">
+        UPDATE likeNotifications
+           SET notified = 'Y'
+         WHERE notified = 'N'
+           AND wasLiked = 'N'
+           AND <include refid="anHourPassed"/>
+    </update>
+
+    <update id="notifyReaction">
+        UPDATE reactionNotifications
+           SET notified = 'Y'
+         WHERE notified = 'N'
+           AND <include refid="anHourPassed"/>
+    </update>
+
+    <!-- markAsRead -->
+
+    <sql id="markAsRead"> <!-- TODO -->
+        UPDATE ${table}
+           SET readDate = nvl((SELECT readDate
+                                 FROM ${table}
+                               <include refid="${check}"/>),
+                              SYSDATE)
+        <include refid="${check}"/>
+    </sql>
+
+    <sql id="followPkCheck">
+        WHERE notifiedUser = #{notifiedUser}
+          AND followedUser = #{followedUser}
+    </sql>
+
+    <sql id="likePkCheck">
+        WHERE notifiedUser = #{notifiedUser}
+          AND likedUser = #{likedUser}
+          AND post = #{post}
+    </sql>
+    <sql id="reactionPkCheck">
+        WHERE notifiedUser = #{notifiedUser}
+          AND reaction = #{reaction}
+    </sql>
+
+    <update id="markFollowAsRead" parameterType="FollowNotification">
+        <include refid="markAsRead">
+            <property name="table" value="followNotifications"/>
+            <property name="check" value="followPkCheck"/>
+        </include>
+    </update>
+
+    <update id="markLikeAsRead" parameterType="LikeNotification">
+        <include refid="markAsRead">
+            <property name="table" value="likeNotifications"/>
+            <property name="check" value="likePkCheck"/>
+        </include>
+    </update>
+
+    <update id="markReactionAsRead" parameterType="ReactionNotification">
+        <include refid="markAsRead">
+            <property name="table" value="reactionNotifications"/>
+            <property name="check" value="reactionPkCheck"/>
+        </include>
+    </update>
+
+    <!-- RemoveOldNotification -->
+
+    <sql id="removeOldNotifications">
+        DELETE FROM ${table}
+         WHERE SYSDATE - notifyDate >= to_date('14', 'DD')
+            OR SYSDATE - readDate >= to_date('2', 'hh');
+    </sql>
+
+    <delete id="removeOldFollowNotifications">
+        <include refid="removeOldNotifications">
+            <property name="table" value="followNotifications"/>
+        </include>
+    </delete>
+
+    <delete id="removeOldLikeNotifications">
+        <include refid="removeOldNotifications">
+            <property name="table" value="likeNotifications"/>
+        </include>
+    </delete>
+
+    <delete id="removeOldReactionNotifications">
+        <include refid="removeOldNotifications">
+            <property name="table" value="reactionNotifications"/>
+        </include>
+    </delete>
+</mapper>

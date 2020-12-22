@@ -17,7 +17,7 @@ public class LoginDAO {
 	}
 
 	@Nullable public UserLoginData findUserWithPhoneNumber(String phoneNumber) {
-		return sql.selectOne("login.findUserWithEmail", phoneNumber);
+		return sql.selectOne("login.findUserWithPhoneNumber", phoneNumber);
 	}
 
 	@Nullable public Integer findUserWithKakaoUserId(long kakaoUserId) {

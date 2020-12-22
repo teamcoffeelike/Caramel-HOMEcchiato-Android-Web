@@ -35,13 +35,13 @@ public class LoginController {
 	 * 이메일을 사용한 로그인<br>
 	 * <br>
 	 * <b>성공 시:</b>
-	 * 
+	 *
 	 * <pre>
 	 * <code> {
 	 *   userId: Integer
 	 * }</code>
 	 * </pre>
-	 * 
+	 *
 	 * <b>에러: </b><br>
 	 * bad_email : 유효하지 않은 email 인자<br>
 	 * bad_password : 유효하지 않은 password 인자<br>
@@ -53,23 +53,23 @@ public class LoginController {
 			@RequestParam String email,
 			@RequestParam String password) {
 		LoginResult result = loginService.loginWithEmail(email, password);
-		if (result.isSuccess()) {
-			session.setAttribute("loginUser", result.asSuccess().getUserId());
+		if (result.getUserId()!=null) {
+			session.setAttribute(SessionAttributes.LOGIN_USER, result.getUserId());
 		}
-		return result.toJson();
+		return JsonHelper.GSON.toJson(result);
 	}
 
 	/**
 	 * 폰 사용한 로그인<br>
 	 * <br>
 	 * <b>성공 시:</b>
-	 * 
+	 *
 	 * <pre>
 	 * <code> {
 	 *   userId: Integer
 	 * }</code>
 	 * </pre>
-	 * 
+	 *
 	 * <b>에러: </b><br>
 	 * bad_phone_number : 유효하지 않은 phoneNumber 인자<br>
 	 * bad_password : 유효하지 않은 password 인자<br>
@@ -81,23 +81,44 @@ public class LoginController {
 			@RequestParam String phoneNumber,
 			@RequestParam String password) {
 		LoginResult result = loginService.loginWithPhoneNumber(phoneNumber, password);
-		if (result.isSuccess()) {
-			session.setAttribute("loginUser", result.asSuccess().getUserId());
+		if (result.getUserId()!=null) {
+			session.setAttribute(SessionAttributes.LOGIN_USER, result.getUserId());
 		}
-		return result.toJson();
+		return JsonHelper.GSON.toJson(result);
+	}
+
+	/**
+	 * 로그아웃<br>
+	 * <br>
+	 * <b>성공 시:</b>
+	 *
+	 * <pre>추가 데이터 없음
+	 * </pre>
+	 *
+	 * <b>에러: </b><br>
+	 * not_logged_in : 로그인 상태가 아님<br>
+	 */
+	@ResponseBody
+	@RequestMapping("/logout")
+	public String logout(HttpSession session){
+		Integer loginUser = SessionAttributes.getLoginUser(session);
+		if(loginUser==null) return JsonHelper.failure("not_logged_in");
+
+		session.removeAttribute(SessionAttributes.LOGIN_USER);
+		return "{}";
 	}
 
 	/**
 	 * 카카오 계정 연동을 사용한 로그인<br>
 	 * <br>
 	 * <b>성공 시:</b>
-	 * 
+	 *
 	 * <pre>
 	 * <code> {
 	 *   userId: Integer
 	 * }</code>
 	 * </pre>
-	 * 
+	 *
 	 * <b>에러: </b><br>
 	 * bad_kakao_login_token : 유효하지 않은 kakaoLoginToken 인자<br>
 	 * kakao_service_unavailable : 카카오 플랫폼 서비스의 일시적 문제 등으로 인해 서비스 제공이 불가<br>
@@ -116,9 +137,9 @@ public class LoginController {
 		if(response.isSuccess()) {
 			long kakaoUserId = response.getResponse().get("id").getAsLong();
 			LoginResult result = loginService.loginWithKakao(kakaoUserId);
-			if(result.isSuccess()) {
-				session.setAttribute(SessionAttributes.LOGIN_USER, result.asSuccess().getUserId());
-				return result.toJson();
+			if(result.getUserId()!=null) {
+				session.setAttribute(SessionAttributes.LOGIN_USER, result.getUserId());
+				return JsonHelper.GSON.toJson(result);
 			}
 
 			// TODO 새 유저로 회원가입
