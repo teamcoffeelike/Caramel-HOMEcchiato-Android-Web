@@ -59,8 +59,8 @@
 	<update id="setPassword"
 			parameterType="map">
 		UPDATE users
-		SET password = #{newPassword}
-		WHERE id = #{userId}
+		   SET password = #{newPassword}
+		 WHERE id = #{userId}
 	</update>
 	
 	<insert id="follow"
@@ -79,7 +79,7 @@
 	<update id="setNotification"
 			parameterType="map">
 		UPDATE users
-		SET ${type} = #{value}
-		WHERE id = #{user}
+		   SET ${type} = #{value}
+		 WHERE id = #{user}
 	</update>
 </mapper>

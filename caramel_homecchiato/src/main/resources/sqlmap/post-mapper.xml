@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="post">
+
+	<select id="postDetail"
+			parameterType="map" 
+			resultType="Post">
+		SELECT  id,
+				text,
+				author,
+				(SELECT COUNT(post)
+				   FROM postlikes
+				  WHERE	post = #{id}) likes,
+				(SELECT COUNT(post)
+				   FROM	reactions
+ 				  WHERE	post = #{id}) reactions,
+ 				(SELECT COUNT(post)
+ 				   FROM	postlikes
+ 				  WHERE	userId = #{userId}
+ 				  	AND	post = #{id}) likedByYou
+		  FROM	posts
+		 WHERE	id = #{id} 	
+	</select>
+	
+	<insert id="writePost"
+	 		parameterType="map">
+		INSERT INTO posts(text, author)
+		VALUES (#{text}, #{loginUser})
+	</insert>
+
+</mapper>
