@@ -1,7 +1,11 @@
 package com.hanul.coffeelike.caramelweb;
 
-import javax.servlet.http.HttpSession;
-
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.hanul.coffeelike.caramelweb.data.UserProfileData;
+import com.hanul.coffeelike.caramelweb.data.UserSettingData;
+import com.hanul.coffeelike.caramelweb.service.UserService;
+import com.hanul.coffeelike.caramelweb.util.JsonHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -10,16 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.hanul.coffeelike.caramelweb.data.UserSettingData;
-import com.hanul.coffeelike.caramelweb.service.UserService;
-import com.hanul.coffeelike.caramelweb.util.JsonHelper;
+import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Controller
 public class UserController {
-	private final Gson GSON = new GsonBuilder().create();
 	@Autowired
 	private UserService service;
 
@@ -98,7 +97,7 @@ public class UserController {
 		o.addProperty("success", "true");
 		o.addProperty("userId", 1231231323);
 
-		return GSON.toJson(o);
+		return JsonHelper.GSON.toJson(o);
 	}
 	
 	/**
@@ -119,7 +118,7 @@ public class UserController {
 		o.addProperty("success", "true");
 		o.addProperty("userId", 1231231323);
 
-		return GSON.toJson(o);
+		return JsonHelper.GSON.toJson(o);
 	}
 	
 	/**
@@ -134,8 +133,6 @@ public class UserController {
 	incorrect_password : 기존 암호와 일치하지 않는 password 인자
 	bad_new_password   : 존재하지 않거나 유효하지 않은 newPassword 인자
 	*/
-
-	// 비밀번호 재설정
 	@ResponseBody
 	@RequestMapping("/setPassword")
 	public String setPassword(HttpSession session, @RequestParam String password, @RequestParam String newPassword) {
@@ -143,6 +140,22 @@ public class UserController {
 		o.addProperty("success", "true");
 		o.addProperty("userId", 1231231323);
 
-		return GSON.toJson(o);
+		return JsonHelper.GSON.toJson(o);
+	}
+
+
+	@ResponseBody
+	@RequestMapping("/getFollower")
+	public String getFollower(HttpSession session){
+		Integer loginUser = (Integer)session.getAttribute("loginUser");
+		if(loginUser==null) return JsonHelper.failure("not_logged_in");
+
+		List<UserProfileData> users = service.getFollower(loginUser);
+		JsonElement e = JsonHelper.GSON.toJsonTree(users);
+
+		JsonObject o = new JsonObject();
+		o.add("users", e);
+
+		return JsonHelper.GSON.toJson(o);
 	}
 }

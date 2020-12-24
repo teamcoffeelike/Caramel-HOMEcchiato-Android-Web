@@ -12,6 +12,7 @@ import com.hanul.coffeelike.caramelweb.util.HttpConnector;
 import com.hanul.coffeelike.caramelweb.util.JsonHelper;
 import com.hanul.coffeelike.caramelweb.util.SessionAttributes;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -63,7 +64,7 @@ public class KakaoIntegrationController{
 			return loginResult.toJson();
 		}
 
-		return join(session, kakaoLoginToken);
+		return join(session, kakaoLoginToken, null);
 	}
 
 	/**
@@ -87,7 +88,8 @@ public class KakaoIntegrationController{
 	@RequestMapping("/joinWithKakao")
 	public String joinWithKakao(
 			HttpSession session,
-			@RequestParam String kakaoLoginToken) throws IOException{
+			@RequestParam String kakaoLoginToken,
+			@RequestParam(required = false) String name) throws IOException{
 		HttpConnector.Response<JsonObject> response = HttpConnector.create("https://kapi.kakao.com/v1/user/access_token_info")
 				.setRequestProperty("Content-type", "application/json")
 				.setRequestProperty("Authorization", "Bearer "+kakaoLoginToken)
@@ -95,18 +97,21 @@ public class KakaoIntegrationController{
 
 		if(!response.isSuccess()) return getResponseError(response);
 
-		return join(session, kakaoLoginToken);
+		return join(session, kakaoLoginToken, name);
 	}
 
 	private String join(
 			HttpSession session,
-			String kakaoLoginToken) throws IOException{
+			String kakaoLoginToken,
+			@Nullable String name) throws IOException{
 		HttpConnector.Response<JsonObject> response = HttpConnector.create("https://kapi.kakao.com/v2/user/me")
 				.setRequestProperty("Content-type", "application/json")
 				.setRequestProperty("Authorization", "Bearer "+kakaoLoginToken)
 				.setRequestProperty("property_keys", "[\"properties.nickname\"]")
 				.readAsJsonObject();
 		if(!response.isSuccess()) return getResponseError(response);
+
+		System.out.println(response.getResponse());
 
 		// 닉네임 존재 여부 체크
 		JsonElement kakaoAccount = response.getResponse().get("kakao_account");

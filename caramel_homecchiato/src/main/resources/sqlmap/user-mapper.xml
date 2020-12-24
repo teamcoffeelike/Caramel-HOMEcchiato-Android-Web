@@ -2,11 +2,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="user">
-
 	<select id="userSettings" resultType="UserSettingData">
 		SELECT *
-		FROM users
-		WHERE id = #{id}
+		  FROM users
+		 WHERE id = #{id}
 	</select>
-	
+	<select id="getFollower"
+			parameterType="Integer"
+			resultType="UserProfileData">
+		SELECT f.userId id,
+               u.name name,
+		       u.profileImage profileImage
+		  FROM follows f JOIN users u ON f.userId = u.id
+		 WHERE f.following = #{it}
+	</select>
 </mapper>
