@@ -9,7 +9,6 @@ import com.hanul.coffeelike.caramelweb.service.NotificationService;
 import com.hanul.coffeelike.caramelweb.util.JsonHelper;
 import com.hanul.coffeelike.caramelweb.util.SessionAttributes;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -139,26 +138,5 @@ public class NotificationController{
 			return JsonHelper.failure("no_notification");
 		}
 		return "{}";
-	}
-
-	/**
-	 * 매 1시간마다 실행. 읽지 않은 상태로 2주가 지났거나 읽은 후 2시간이 지난 알림을 데이터베이스에서 삭제합니다.
-	 */
-	// http://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html
-	// https://www.freeformatter.com/cron-expression-generator-quartz.html
-	@Scheduled(cron = "0 0 * * * ?")
-	public void removeOldNotifications(){
-		notificationService.removeOldNotifications();
-	}
-
-	/**
-	 * 매 10초마다 실행. 1분이 지난 알림을 활성화시키고 각각의 유저에게 알림을 보냅니다.
-	 */
-	@Scheduled(cron = "0/10 * * ? * *")
-	public void processNotifications(){
-		List<Integer> users = notificationService.processNotifications();
-		for(int user : users){
-			// TODO notify
-		}
 	}
 }

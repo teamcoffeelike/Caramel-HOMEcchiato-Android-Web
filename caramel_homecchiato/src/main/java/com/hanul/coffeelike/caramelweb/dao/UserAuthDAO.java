@@ -13,8 +13,8 @@ public class UserAuthDAO{
 	@Autowired
 	private SqlSession sql;
 
-	@Nullable public AuthToken getAuthToken(UUID uuid){
-		return sql.selectOne("auth.getAuthToken", uuid);
+	@Nullable public AuthToken getAuthTokenInformation(UUID uuid){
+		return sql.selectOne("auth.getAuthTokenInformation", uuid);
 	}
 
 	public void addAuthToken(UUID uuid, int userId){
@@ -29,7 +29,7 @@ public class UserAuthDAO{
 		sql.update("auth.updateAuthToken", uuid);
 	}
 
-	@Nullable public Integer findUserWithAuthToken(UUID uuid){
-		return sql.selectOne("auth.findUserWithAuthToken", uuid);
+	public int removeStaleAuthTokens(){
+		return sql.delete("auth.removeStaleAuthTokens");
 	}
 }

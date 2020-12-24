@@ -2,12 +2,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="auth">
 
-    <select id="getAuthToken"
+    <sql id="compareAcquiredDate">
+        SYSDATE - acquiredDate ${operator} to_date(1, 'MM')
+    </sql>
+
+    <select id="getAuthTokenInformation"
             parameterType="java.util.UUID"
             resultType="AuthToken">
         SELECT authToken,
                userId,
-               (SYSDATE - acquiredDate &lt; to_date(1, 'MM')) isValid
+               (<include refid="compareAcquiredDate">
+                   <property name="operator" value="&lt;"/>
+               </include>) isValid
           FROM userAuth
          WHERE authToken = #{authToken}
     </select>
@@ -30,13 +36,12 @@
            SET acquiredDate = SYSDATE
          WHERE authToken = #{it}
     </update>
-
-    <select id="findUserWithAuthToken"
-            parameterType="java.util.UUID"
-            resultType="Integer">
-        SELECT userId
-          FROM userAuth
-         WHERE authToken = #{it}
-    </select>
+    
+    <delete id="removeStaleAuthTokens">
+        DELETE FROM userAuth
+         WHERE <include refid="compareAcquiredDate">
+                   <property name="operator" value=">="/>
+               </include>
+    </delete>
 
 </mapper>

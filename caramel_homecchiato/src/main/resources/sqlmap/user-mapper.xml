@@ -59,9 +59,19 @@
 	<update id="setPassword"
 			parameterType="map">
 		UPDATE users
-		SET password = #{newPassword}
-		WHERE id = #{userId}
+		   SET password = #{newPassword}
+		 WHERE id = #{userId}
 	</update>
+
+	<select id="getFollower"
+			parameterType="Integer"
+			resultType="UserProfileData">
+		SELECT f.userId id,
+		       u.name name,
+		       u.profileImage profileImage
+		  FROM follows f JOIN users u ON f.userId = u.id
+		 WHERE f.following = #{it}
+	</select>
 
 	<insert id="follow"
 			parameterType="map">
@@ -79,18 +89,8 @@
 	<update id="setNotification"
 			parameterType="map">
 		UPDATE users
-		SET ${type} = #{value}
-		WHERE id = #{user}
+		   SET ${type} = #{value}
+		 WHERE id = #{user}
 	</update>
-
-	<select id="getFollower"
-			parameterType="Integer"
-			resultType="UserProfileData">
-		SELECT f.userId id,
-               u.name name,
-		       u.profileImage profileImage
-		  FROM follows f JOIN users u ON f.userId = u.id
-		 WHERE f.following = #{it}
-	</select>
 
 </mapper>

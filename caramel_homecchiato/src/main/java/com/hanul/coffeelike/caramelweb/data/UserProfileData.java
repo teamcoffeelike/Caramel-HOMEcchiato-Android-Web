@@ -5,14 +5,26 @@ import org.springframework.lang.Nullable;
 public class UserProfileData{
 	private int id;
 
-	@Nullable private String name;
+	private String name;
 	@Nullable private String motd;
 	@Nullable private String profileImage;
 
 	@Nullable private Boolean isFollowingYou;
 	@Nullable private Boolean isFollowedByYou;
 
-
+	public UserProfileData(int id,
+	                       String name,
+	                       @Nullable String motd,
+	                       @Nullable String profileImage,
+	                       @Nullable Boolean isFollowingYou,
+	                       @Nullable Boolean isFollowedByYou){
+		this.id = id;
+		this.name = name;
+		this.motd = motd;
+		this.profileImage = profileImage;
+		this.isFollowingYou = isFollowingYou;
+		this.isFollowedByYou = isFollowedByYou;
+	}
 
 	public int getId(){
 		return id;
@@ -26,28 +38,28 @@ public class UserProfileData{
 	public void setName(String name){
 		this.name = name;
 	}
-	public String getMotd(){
+	@Nullable public String getMotd(){
 		return motd;
 	}
-	public void setMotd(String motd){
+	public void setMotd(@Nullable String motd){
 		this.motd = motd;
 	}
-	public String getProfileImage(){
+	@Nullable public String getProfileImage(){
 		return profileImage;
 	}
-	public void setProfileImage(String profileImage){
+	public void setProfileImage(@Nullable String profileImage){
 		this.profileImage = profileImage;
 	}
-	public Boolean getIsFollowingYou(){
+	@Nullable public Boolean getFollowingYou(){
 		return isFollowingYou;
 	}
-	public void setIsFollowingYou(Boolean isFollowingYou){
-		this.isFollowingYou = isFollowingYou;
+	public void setFollowingYou(@Nullable Boolean followingYou){
+		isFollowingYou = followingYou;
 	}
-	public Boolean getIsFollowedByYou(){
+	@Nullable public Boolean getFollowedByYou(){
 		return isFollowedByYou;
 	}
-	public void setIsFollowedByYou(Boolean isFollowedByYou){
-		this.isFollowedByYou = isFollowedByYou;
+	public void setFollowedByYou(@Nullable Boolean followedByYou){
+		isFollowedByYou = followedByYou;
 	}
 }

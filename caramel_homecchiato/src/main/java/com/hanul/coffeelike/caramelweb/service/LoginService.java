@@ -1,6 +1,7 @@
 package com.hanul.coffeelike.caramelweb.service;
 
 import com.hanul.coffeelike.caramelweb.dao.LoginDAO;
+import com.hanul.coffeelike.caramelweb.data.AuthToken;
 import com.hanul.coffeelike.caramelweb.data.LoginResult;
 import com.hanul.coffeelike.caramelweb.data.UserLoginData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,11 +42,11 @@ public class LoginService{
 	}
 
 	public LoginResult loginWithAuthToken(UUID uuid){
-		Integer userId = authService.findUserWithAuthToken(uuid);
-		if(userId==null){
+		AuthToken token = authService.getAuthTokenInformation(uuid);
+		if(token==null){
 			return new LoginResult("login_failed");
 		}
 		authService.updateAuthToken(uuid);
-		return new LoginResult(userId, uuid);
+		return new LoginResult(token.getUserId(), uuid);
 	}
 }
