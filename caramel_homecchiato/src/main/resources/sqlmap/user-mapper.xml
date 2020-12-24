@@ -3,10 +3,83 @@
 
 <mapper namespace="user">
 
-	<select id="userSettings" resultType="UserSettingData">
-		SELECT *
-		FROM users
-		WHERE id = #{id}
+	<select id="userSettings"
+			parameterType="Integer"
+			resultType="UserSettingData">
+		SELECT id,
+			   name,
+			   motd,
+			   profileImage,
+			   notifyReactions,
+			   notifyLikes,
+			   notifyFollows
+		  FROM users
+		 WHERE id = #{id}
+	</select>
+
+	<select id="selectProfile"
+			parameterType="map"
+			resultType="UserProfileData">
+		SELECT id,
+		       name,
+		       motd,
+		       profileImage,
+		       (CASE WHEN #{loginUser, jdbcType=INTEGER} IS NULL THEN NULL
+		             WHEN #{loginUser, jdbcType=INTEGER} = #{userId} THEN NULL
+		             ELSE (SELECT COUNT(*)
+		                     FROM follows
+		                    WHERE userId = #{loginUser, jdbcType=INTEGER}
+		                      AND following = #{userId})
+		        END) isFollowedByYou,
+		       (CASE WHEN #{loginUser, jdbcType=INTEGER} IS NULL THEN NULL
+		             WHEN #{loginUser, jdbcType=INTEGER} = #{userId} THEN NULL
+		             ELSE (SELECT COUNT(*)
+		                     FROM follows
+		                    WHERE userId = #{userId}
+		                      AND following = #{loginUser, jdbcType=INTEGER})
+		        END) isFollowingYou
+		  FROM users
+		 WHERE id = #{userId}
 	</select>
 	
+	<update id="setName"
+			parameterType="map">
+		UPDATE users 
+		   SET name = #{name}
+		 WHERE id = #{id}	
+	</update>
+	
+	<select id="getUserPasswordById"
+			parameterType="Integer">
+		SELECT password
+		  FROM users
+		 WHERE id = #{userId}
+	</select>
+
+	<update id="setPassword"
+			parameterType="map">
+		UPDATE users
+		SET password = #{newPassword}
+		WHERE id = #{userId}
+	</update>
+	
+	<insert id="follow"
+			parameterType="map">
+		INSERT INTO follows(userId, following)
+		VALUES (#{loginUser}, #{followingId})
+	</insert>
+	
+	<delete id="unfollow"
+			parameterType="map">
+		DELETE FROM follows
+		 WHERE userId = #{loginUser}
+		   AND following = #{followingId}
+	</delete>
+
+	<update id="setNotification"
+			parameterType="map">
+		UPDATE users
+		SET ${type} = #{value}
+		WHERE id = #{user}
+	</update>
 </mapper>

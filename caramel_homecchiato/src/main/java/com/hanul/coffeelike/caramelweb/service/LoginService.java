@@ -2,67 +2,62 @@ package com.hanul.coffeelike.caramelweb.service;
 
 import com.hanul.coffeelike.caramelweb.dao.LoginDAO;
 import com.hanul.coffeelike.caramelweb.data.UserLoginData;
-import com.hanul.coffeelike.caramelweb.util.JsonHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 @Service
-public class LoginService {
+public class LoginService{
 	@Autowired
 	private LoginDAO dao;
 
-	public LoginResult loginWithEmail(String email, String password) {
+	public LoginResult loginWithEmail(String email, String password){
 		UserLoginData user = dao.findUserWithEmail(email);
-		if(user==null||!password.equals(user.getPassword())) {
-			return LoginFailure.LOGIN_FAILED;
+		if(user==null||!password.equals(user.getPassword())){
+			return new LoginResult("login_failed");
 		}
-		return new LoginSuccess(user.getId());
+		return new LoginResult(user.getId());
 	}
 
-	public LoginResult loginWithPhoneNumber(String phoneNumber, String password) {
+	public LoginResult loginWithPhoneNumber(String phoneNumber, String password){
 		UserLoginData user = dao.findUserWithPhoneNumber(phoneNumber);
-		if(user==null||!password.equals(user.getPassword())) {
-			return LoginFailure.LOGIN_FAILED;
+		if(user==null||!password.equals(user.getPassword())){
+			return new LoginResult("login_failed");
 		}
-		return new LoginSuccess(user.getId());
+		return new LoginResult(user.getId());
 	}
 
-	public LoginResult loginWithKakao(long kakaoUserId) {
+	public LoginResult loginWithKakao(long kakaoUserId){
 		Integer userId = dao.findUserWithKakaoUserId(kakaoUserId);
-		if(userId==null) {
-			return LoginFailure.LOGIN_FAILED;
+		if(userId==null){
+			return new LoginResult("login_failed");
 		}
-		return new LoginSuccess(userId);
+		return new LoginResult(userId);
 	}
 
 
-	public interface LoginResult {
-		String toJson();
-	}
+	public static class LoginResult{
+		@Nullable private String error;
+		@Nullable private Integer userId;
 
-	public static class LoginSuccess implements LoginResult{
-		private final int userId;
-
-		public LoginSuccess(int userId) {
+		public LoginResult(String error){
+			this.error = error;
+		}
+		public LoginResult(Integer userId){
 			this.userId = userId;
 		}
 
-		public int getUserId() {
-			return this.userId;
+		@Nullable public String getError(){
+			return error;
 		}
-
-		@Override public String toJson() {
-			return JsonHelper.success()
-					.with("userId", userId)
-					.render();
+		public void setError(@Nullable String error){
+			this.error = error;
 		}
-	}
-
-	public enum LoginFailure implements LoginResult{
-		LOGIN_FAILED;
-
-		@Override public String toJson() {
-			return JsonHelper.failure(name().toLowerCase());
+		@Nullable public Integer getUserId(){
+			return userId;
+		}
+		public void setUserId(@Nullable Integer userId){
+			this.userId = userId;
 		}
 	}
 }

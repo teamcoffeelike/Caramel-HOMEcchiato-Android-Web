@@ -14,9 +14,11 @@ public class LoginDAO{
 	@Nullable public UserLoginData findUserWithEmail(String email){
 		return sql.selectOne("login.findUserWithEmail", email);
 	}
+
 	@Nullable public UserLoginData findUserWithPhoneNumber(String phoneNumber){
-		return sql.selectOne("login.findUserWithEmail", phoneNumber);
+		return sql.selectOne("login.findUserWithPhoneNumber", phoneNumber);
 	}
+
 	@Nullable public Integer findUserWithKakaoUserId(long kakaoUserId){
 		return sql.selectOne("login.findUserWithKakaoUserId", kakaoUserId);
 	}
