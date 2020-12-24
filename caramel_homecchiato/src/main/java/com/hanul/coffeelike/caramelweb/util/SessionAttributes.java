@@ -1,5 +1,6 @@
 package com.hanul.coffeelike.caramelweb.util;
 
+import com.hanul.coffeelike.caramelweb.data.AuthToken;
 import org.springframework.lang.Nullable;
 
 import javax.servlet.http.HttpSession;
@@ -15,7 +16,12 @@ public final class SessionAttributes {
 	 */
 	public static final String LOGIN_USER = "loginUser";
 
-	@Nullable public static Integer getLoginUser(HttpSession session){
-		return (Integer)session.getAttribute(LOGIN_USER);
+	@Nullable public static AuthToken getLoginUser(HttpSession session){
+		return (AuthToken)session.getAttribute(LOGIN_USER);
+	}
+
+	public static void setLoginUser(HttpSession session, @Nullable AuthToken authToken){
+		if(authToken==null) session.removeAttribute(LOGIN_USER);
+		else session.setAttribute(LOGIN_USER, authToken);
 	}
 }

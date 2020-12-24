@@ -1,4 +1,4 @@
-package com.hanul.coffeelike.caramelweb.util;
+package com.hanul.coffeelike.caramelweb.typehandler;
 
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;

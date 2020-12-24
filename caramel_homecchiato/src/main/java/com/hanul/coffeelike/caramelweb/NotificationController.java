@@ -1,5 +1,6 @@
 package com.hanul.coffeelike.caramelweb;
 
+import com.hanul.coffeelike.caramelweb.data.AuthToken;
 import com.hanul.coffeelike.caramelweb.data.FollowNotification;
 import com.hanul.coffeelike.caramelweb.data.LikeNotification;
 import com.hanul.coffeelike.caramelweb.data.Notification;
@@ -61,10 +62,10 @@ public class NotificationController{
 	@ResponseBody
 	@RequestMapping("/notification")
 	public String notification(HttpSession session){
-		Integer loginUser = SessionAttributes.getLoginUser(session);
+		AuthToken loginUser = SessionAttributes.getLoginUser(session);
 		if(loginUser==null) return JsonHelper.failure("not_logged_in");
 
-		List<Notification> l = notificationService.notification(loginUser);
+		List<Notification> l = notificationService.notification(loginUser.getUserId());
 		return JsonHelper.create()
 				.with("notifications", l)
 				.render();
@@ -83,11 +84,11 @@ public class NotificationController{
 	public String markFollowNotificationAsRead(
 			HttpSession session,
 			@RequestParam int user){
-		Integer loginUser = SessionAttributes.getLoginUser(session);
+		AuthToken loginUser = SessionAttributes.getLoginUser(session);
 		if(loginUser==null) return JsonHelper.failure("not_logged_in");
 
 		if(!notificationService.markFollowNotificationAsRead(
-				new FollowNotification(loginUser, user))){
+				new FollowNotification(loginUser.getUserId(), user))){
 			return JsonHelper.failure("no_notification");
 		}
 		return "{}";
@@ -107,11 +108,11 @@ public class NotificationController{
 			HttpSession session,
 			@RequestParam int user,
 			@RequestParam int post){
-		Integer loginUser = SessionAttributes.getLoginUser(session);
+		AuthToken loginUser = SessionAttributes.getLoginUser(session);
 		if(loginUser==null) return JsonHelper.failure("not_logged_in");
 
 		if(!notificationService.markLikeNotificationAsRead(
-				new LikeNotification(loginUser, user, post))){
+				new LikeNotification(loginUser.getUserId(), user, post))){
 			return JsonHelper.failure("no_notification");
 		}
 		return "{}";
@@ -130,11 +131,11 @@ public class NotificationController{
 	public String markReactionNotificationAsRead(
 			HttpSession session,
 			@RequestParam int reaction){
-		Integer loginUser = SessionAttributes.getLoginUser(session);
+		AuthToken loginUser = SessionAttributes.getLoginUser(session);
 		if(loginUser==null) return JsonHelper.failure("not_logged_in");
 
 		if(!notificationService.markReactionNotificationAsRead(
-				new ReactionNotification(loginUser, reaction))){
+				new ReactionNotification(loginUser.getUserId(), reaction))){
 			return JsonHelper.failure("no_notification");
 		}
 		return "{}";

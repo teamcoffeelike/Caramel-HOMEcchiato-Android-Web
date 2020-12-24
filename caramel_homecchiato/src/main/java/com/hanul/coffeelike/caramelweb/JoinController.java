@@ -1,9 +1,9 @@
 package com.hanul.coffeelike.caramelweb;
 
+import com.hanul.coffeelike.caramelweb.data.LoginResult;
 import com.hanul.coffeelike.caramelweb.service.JoinService;
-import com.hanul.coffeelike.caramelweb.service.JoinService.JoinResult;
-import com.hanul.coffeelike.caramelweb.service.JoinService.JoinSuccess;
 import com.hanul.coffeelike.caramelweb.util.JsonHelper;
+import com.hanul.coffeelike.caramelweb.util.SessionAttributes;
 import com.hanul.coffeelike.caramelweb.util.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
-
-import static com.hanul.coffeelike.caramelweb.util.SessionAttributes.LOGIN_USER;
 
 @Controller
 public class JoinController{
@@ -56,12 +54,11 @@ public class JoinController{
 		if(!Validate.email(email)) return JsonHelper.failure("bad_email");
 		if(!Validate.password(password)) return JsonHelper.failure("bad_password");
 
-		JoinResult result = joinService.joinWithEmail(name, email, password);
-		if(result instanceof JoinSuccess){
-			//session.setAttribute(LOGIN_USER, result.asSuccess().getUserId());
-			session.setAttribute(LOGIN_USER, ((JoinSuccess)result).getUserId());
+		LoginResult result = joinService.joinWithEmail(name, email, password);
+		if(result.getError()==null){
+			SessionAttributes.setLoginUser(session, result.createAuthToken());
 		}
-		return result.toJson();
+		return JsonHelper.GSON.toJson(result);
 	}
 
 	/**
@@ -92,10 +89,10 @@ public class JoinController{
 		if(!Validate.phoneNumber(phoneNumber)) return JsonHelper.failure("bad_email");
 		if(!Validate.password(password)) return JsonHelper.failure("bad_password");
 
-		JoinResult result = joinService.joinWithPhoneNumber(name, phoneNumber, password);
-		if(result instanceof JoinSuccess){
-			session.setAttribute(LOGIN_USER, ((JoinSuccess)result).getUserId());
+		LoginResult result = joinService.joinWithPhoneNumber(name, phoneNumber, password);
+		if(result.getError()==null){
+			SessionAttributes.setLoginUser(session, result.createAuthToken());
 		}
-		return result.toJson();
+		return JsonHelper.GSON.toJson(result);
 	}
 }

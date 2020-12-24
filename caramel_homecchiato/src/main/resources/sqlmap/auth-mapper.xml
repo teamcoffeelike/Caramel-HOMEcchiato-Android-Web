@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="auth">
+
+    <select id="getAuthToken"
+            parameterType="java.util.UUID"
+            resultType="AuthToken">
+        SELECT authToken,
+               userId,
+               (SYSDATE - acquiredDate &lt; to_date(1, 'MM')) isValid
+          FROM userAuth
+         WHERE authToken = #{authToken}
+    </select>
+
+    <insert id="addAuthToken"
+            parameterType="AuthToken">
+        INSERT INTO userAuth(authToken, userId, acquiredDate)
+        VALUES (#{authToken}, #{userId}, SYSDATE)
+    </insert>
+
+    <delete id="removeAuthToken"
+            parameterType="java.util.UUID">
+        DELETE FROM userAuth
+         WHERE authToken = #{it}
+    </delete>
+
+    <update id="updateAuthToken"
+            parameterType="java.util.UUID">
+        UPDATE userAuth
+           SET acquiredDate = SYSDATE
+         WHERE authToken = #{it}
+    </update>
+
+    <select id="findUserWithAuthToken"
+            parameterType="java.util.UUID"
+            resultType="Integer">
+        SELECT userId
+          FROM userAuth
+         WHERE authToken = #{it}
+    </select>
+
+</mapper>

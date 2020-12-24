@@ -1,6 +1,7 @@
 package com.hanul.coffeelike.caramelweb;
 
 import com.google.gson.JsonObject;
+import com.hanul.coffeelike.caramelweb.data.AuthToken;
 import com.hanul.coffeelike.caramelweb.data.NotificationType;
 import com.hanul.coffeelike.caramelweb.data.UserProfileData;
 import com.hanul.coffeelike.caramelweb.data.UserSettingData;
@@ -49,10 +50,10 @@ public class UserController{
 	@ResponseBody
 	@RequestMapping("/userSettings")
 	public String userSettings(HttpSession session){
-		Integer loginUser = (Integer)session.getAttribute("loginUser");
+		AuthToken loginUser = SessionAttributes.getLoginUser(session);
 		if(loginUser==null) return JsonHelper.failure("not_logged_in");
 
-		UserSettingData userSettingData = service.userSettings(loginUser);
+		UserSettingData userSettingData = service.userSettings(loginUser.getUserId());
 		JsonObject jsonObject = new JsonObject();
 		{
 			JsonObject subObject = new JsonObject();
@@ -93,8 +94,8 @@ public class UserController{
 	@RequestMapping("/profile")
 	public String profile(HttpSession session,
 	                      @RequestParam int userId){
-		Integer loginUser = SessionAttributes.getLoginUser(session);
-		UserProfileData userProfileData = service.profile(loginUser, userId);
+		AuthToken loginUser = SessionAttributes.getLoginUser(session);
+		UserProfileData userProfileData = service.profile(loginUser==null ? null : loginUser.getUserId(), userId);
 		if(userProfileData==null) return JsonHelper.failure("no_user");
 
 		return JsonHelper.GSON.toJson(userProfileData);
@@ -113,11 +114,11 @@ public class UserController{
 	@RequestMapping("/setName")
 	public String setName(HttpSession session,
 	                      @RequestParam String name){
-		Integer loginUser = (Integer)session.getAttribute("loginUser");
+		AuthToken loginUser = SessionAttributes.getLoginUser (session);
 		if(loginUser==null) return JsonHelper.failure("not_logged_in");
 		if(name==null) return JsonHelper.failure("bad_name");
 
-		service.setName(loginUser, name);
+		service.setName(loginUser.getUserId(), name);
 
 		return "{}";
 	}
@@ -138,12 +139,12 @@ public class UserController{
 	public String setPassword(HttpSession session,
 	                          @RequestParam String password,
 	                          @RequestParam String newPassword){
-		Integer loginUser = (Integer)session.getAttribute("loginUser");
+		AuthToken loginUser = SessionAttributes.getLoginUser(session);
 		if(loginUser==null) return JsonHelper.failure("not_logged_in");
 		if(newPassword.isEmpty()||password.equals(newPassword))
 			return JsonHelper.failure("bad_new_password");
 
-		SetPasswordResult result = service.setPassword(loginUser, password, newPassword);
+		SetPasswordResult result = service.setPassword(loginUser.getUserId(), password, newPassword);
 
 		return JsonHelper.GSON.toJson(result);
 	}
@@ -164,14 +165,14 @@ public class UserController{
 	public String setFollowing(HttpSession session,
 	                           @RequestParam int followingId,
 	                           @RequestParam boolean following){
-		Integer loginUser = (Integer)session.getAttribute("loginUser");
+		AuthToken loginUser = SessionAttributes.getLoginUser(session);
 		if(loginUser==null) return JsonHelper.failure("not_logged_in");
 
-		if(loginUser==followingId){
+		if(loginUser.getUserId()==followingId){
 			return JsonHelper.failure("same_user");
 		}
 
-		boolean result = service.setFollowing(loginUser, followingId, following);
+		boolean result = service.setFollowing(loginUser.getUserId(), followingId, following);
 		if(!result){
 			return JsonHelper.failure(following ? "already_following" : "not_following");
 		}
@@ -206,15 +207,15 @@ public class UserController{
 		default: return JsonHelper.failure("bad_type");
 		}
 
-		Integer loginUser = SessionAttributes.getLoginUser(session);
+		AuthToken loginUser = SessionAttributes.getLoginUser(session);
 		if(loginUser==null) return JsonHelper.failure("not_logged_in");
 
 		switch(value){
 		case "on":
-			service.setNotification(loginUser, notificationType, "Y");
+			service.setNotification(loginUser.getUserId(), notificationType, "Y");
 			break;
 		case "off":
-			service.setNotification(loginUser, notificationType, "N");
+			service.setNotification(loginUser.getUserId(), notificationType, "N");
 			break;
 		default:
 			return JsonHelper.failure("bad_value");

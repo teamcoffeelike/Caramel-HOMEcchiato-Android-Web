@@ -1,22 +1,27 @@
 package com.hanul.coffeelike.caramelweb.service;
 
 import com.hanul.coffeelike.caramelweb.dao.LoginDAO;
+import com.hanul.coffeelike.caramelweb.data.LoginResult;
 import com.hanul.coffeelike.caramelweb.data.UserLoginData;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class LoginService{
 	@Autowired
 	private LoginDAO dao;
+	@Autowired
+	private UserAuthService authService;
 
 	public LoginResult loginWithEmail(String email, String password){
 		UserLoginData user = dao.findUserWithEmail(email);
 		if(user==null||!password.equals(user.getPassword())){
 			return new LoginResult("login_failed");
 		}
-		return new LoginResult(user.getId());
+
+		return new LoginResult(user.getId(), authService.generateAuthToken(user.getId()));
 	}
 
 	public LoginResult loginWithPhoneNumber(String phoneNumber, String password){
@@ -24,7 +29,7 @@ public class LoginService{
 		if(user==null||!password.equals(user.getPassword())){
 			return new LoginResult("login_failed");
 		}
-		return new LoginResult(user.getId());
+		return new LoginResult(user.getId(), authService.generateAuthToken(user.getId()));
 	}
 
 	public LoginResult loginWithKakao(long kakaoUserId){
@@ -32,32 +37,15 @@ public class LoginService{
 		if(userId==null){
 			return new LoginResult("login_failed");
 		}
-		return new LoginResult(userId);
+		return new LoginResult(userId, authService.generateAuthToken(userId));
 	}
 
-
-	public static class LoginResult{
-		@Nullable private String error;
-		@Nullable private Integer userId;
-
-		public LoginResult(String error){
-			this.error = error;
+	public LoginResult loginWithAuthToken(UUID uuid){
+		Integer userId = authService.findUserWithAuthToken(uuid);
+		if(userId==null){
+			return new LoginResult("login_failed");
 		}
-		public LoginResult(Integer userId){
-			this.userId = userId;
-		}
-
-		@Nullable public String getError(){
-			return error;
-		}
-		public void setError(@Nullable String error){
-			this.error = error;
-		}
-		@Nullable public Integer getUserId(){
-			return userId;
-		}
-		public void setUserId(@Nullable Integer userId){
-			this.userId = userId;
-		}
+		authService.updateAuthToken(uuid);
+		return new LoginResult(userId, uuid);
 	}
 }
