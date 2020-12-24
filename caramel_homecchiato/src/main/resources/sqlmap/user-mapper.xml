@@ -41,14 +41,14 @@
 		  FROM users
 		 WHERE id = #{userId}
 	</select>
-	
+
 	<update id="setName"
 			parameterType="map">
-		UPDATE users 
+		UPDATE users
 		   SET name = #{name}
-		 WHERE id = #{id}	
+		 WHERE id = #{id}
 	</update>
-	
+
 	<select id="getUserPasswordById"
 			parameterType="Integer">
 		SELECT password
@@ -62,13 +62,13 @@
 		SET password = #{newPassword}
 		WHERE id = #{userId}
 	</update>
-	
+
 	<insert id="follow"
 			parameterType="map">
 		INSERT INTO follows(userId, following)
 		VALUES (#{loginUser}, #{followingId})
 	</insert>
-	
+
 	<delete id="unfollow"
 			parameterType="map">
 		DELETE FROM follows
@@ -82,4 +82,15 @@
 		SET ${type} = #{value}
 		WHERE id = #{user}
 	</update>
+
+	<select id="getFollower"
+			parameterType="Integer"
+			resultType="UserProfileData">
+		SELECT f.userId id,
+               u.name name,
+		       u.profileImage profileImage
+		  FROM follows f JOIN users u ON f.userId = u.id
+		 WHERE f.following = #{it}
+	</select>
+
 </mapper>

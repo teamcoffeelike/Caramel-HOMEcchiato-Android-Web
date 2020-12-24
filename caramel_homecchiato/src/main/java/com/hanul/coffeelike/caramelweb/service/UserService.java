@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService{
 	@Autowired
@@ -43,6 +45,10 @@ public class UserService{
 		dao.setPassword(userId, newPassword);
 
 		return new SetPasswordResult(null);
+	}
+
+	public List<UserProfileData> getFollower(int loginUser){
+		return dao.getFollower(loginUser);
 	}
 
 	public boolean setFollowing(int loginUser, int followingId, boolean following){

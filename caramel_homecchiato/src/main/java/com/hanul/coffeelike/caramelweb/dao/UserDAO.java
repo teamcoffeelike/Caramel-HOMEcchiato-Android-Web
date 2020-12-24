@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -42,6 +43,10 @@ public class UserDAO{
 		m.put("userId", userId);
 		m.put("newPassword", newPassword);
 		sql.update("user.setPassword", m);
+	}
+
+	public List<UserProfileData> getFollower(int loginUser){
+		return sql.selectList("user.getFollower", loginUser);
 	}
 
 	public int follow(int loginUser, int followingId){

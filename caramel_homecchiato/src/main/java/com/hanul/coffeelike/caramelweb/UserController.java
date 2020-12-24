@@ -1,5 +1,6 @@
 package com.hanul.coffeelike.caramelweb;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.hanul.coffeelike.caramelweb.data.AuthToken;
 import com.hanul.coffeelike.caramelweb.data.NotificationType;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Controller
 public class UserController{
@@ -114,7 +116,7 @@ public class UserController{
 	@RequestMapping("/setName")
 	public String setName(HttpSession session,
 	                      @RequestParam String name){
-		AuthToken loginUser = SessionAttributes.getLoginUser (session);
+		AuthToken loginUser = SessionAttributes.getLoginUser(session);
 		if(loginUser==null) return JsonHelper.failure("not_logged_in");
 		if(name==null) return JsonHelper.failure("bad_name");
 
@@ -147,6 +149,21 @@ public class UserController{
 		SetPasswordResult result = service.setPassword(loginUser.getUserId(), password, newPassword);
 
 		return JsonHelper.GSON.toJson(result);
+	}
+
+	@ResponseBody
+	@RequestMapping("/getFollower")
+	public String getFollower(HttpSession session){
+		Integer loginUser = (Integer)session.getAttribute("loginUser");
+		if(loginUser==null) return JsonHelper.failure("not_logged_in");
+
+		List<UserProfileData> users = service.getFollower(loginUser);
+		JsonElement e = JsonHelper.GSON.toJsonTree(users);
+
+		JsonObject o = new JsonObject();
+		o.add("users", e);
+
+		return JsonHelper.GSON.toJson(o);
 	}
 
 	/**
