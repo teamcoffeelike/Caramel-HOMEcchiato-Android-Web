@@ -1,8 +1,5 @@
 package com.hanul.coffeelike.caramelweb;
 
-import java.io.File;
-import java.util.HashMap;
-
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +13,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.google.gson.JsonObject;
 import com.hanul.coffeelike.caramelweb.data.Post;
 import com.hanul.coffeelike.caramelweb.service.PostService;
+import com.hanul.coffeelike.caramelweb.service.PostService.PostResult;
 import com.hanul.coffeelike.caramelweb.util.JsonHelper;
-
-import oracle.net.aso.l;
 
 @Controller
 public class PostController {
@@ -80,19 +76,20 @@ public class PostController {
 	@RequestMapping("/writePost")
 	public String writePost(
 			HttpSession session,
-			@RequestParam String text,
-			@RequestParam File image
+			@RequestParam String text
+			//@RequestParam File image
 	) {
 		Integer loginUser = (Integer) session.getAttribute("loginUser");
 		if (loginUser == null) return JsonHelper.failure("not_logged_in");
 		if (text.isEmpty()) return JsonHelper.failure("bad_text");
 		//if () return JsonHelper.failure("bad_image");
-		if (!image.exists()) return JsonHelper.failure("no_image");
+		//if (!image.exists()) return JsonHelper.failure("no_image");
 		
-		service.writePost(loginUser, text);
-		// 포스트 아이디값을 어떻게 받아오지..
+		int postId = service.writePost(loginUser, text);
+		JsonObject jsonObject = new JsonObject();
+		jsonObject.addProperty("postId", postId);
 		
-		return JsonHelper.GSON.toJson(new JsonObject());
+		return JsonHelper.GSON.toJson(jsonObject);
 	}
 	
 	/**
@@ -117,15 +114,12 @@ public class PostController {
 			@RequestParam String text
 	) {
 		Integer loginUser = (Integer)session.getAttribute("loginUser");
-		//내가 쓴 글이 아닐때 수정불가 > author != userId 
 		if (loginUser == null) return JsonHelper.failure("cannot_edit");
-		if (text.isEmpty()) return JsonHelper.failure("bad_text");
+		if (text.isBlank()) return JsonHelper.failure("bad_text");
 		
-		JsonObject o = new JsonObject();
-		o.addProperty("success", "true");
-		o.addProperty("userId", 1231231323);
+		PostResult result = service.editPost(loginUser, post, text); 
 		
-		return JsonHelper.GSON.toJson(o);
+		return JsonHelper.GSON.toJson(result);
 	}
 	
 	/**
@@ -146,11 +140,12 @@ public class PostController {
 			HttpSession session,
 			@RequestParam int post
 	) {
-		JsonObject o = new JsonObject();
-		o.addProperty("success", "true");
-		o.addProperty("userId", 1231231323);
+		Integer loginUser = (Integer)session.getAttribute("loginUser");
+		if (loginUser == null) return JsonHelper.failure("cannot_edit");
 		
-		return JsonHelper.GSON.toJson(o);
+		PostResult result = service.deletePost(loginUser, post);
+		
+		return JsonHelper.GSON.toJson(result);
 	}
 	
 	/**

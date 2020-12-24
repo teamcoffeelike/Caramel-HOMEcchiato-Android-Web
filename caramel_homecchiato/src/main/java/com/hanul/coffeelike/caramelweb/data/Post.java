@@ -11,16 +11,17 @@ public class Post {
 	private Date postDate;
 	@Nullable
 	private Date lastEditDate;
-
-	private int likes;
+	private String isDeleted;
+	
+	private int postLikes;
 	private int reactions;
 	@Nullable
-	private boolean likedByYou;
+	private Boolean likedByYou;
 
-	public Post(int id, String text, int ahtuor, Date postDate, @Nullable Date lastEditDate) {
+	public Post(int id, String text, int autuor, Date postDate, @Nullable Date lastEditDate) {
 		this.id = id;
 		this.text = text;
-		this.author = ahtuor;
+		this.author = autuor;
 		this.postDate = postDate;
 		this.lastEditDate = lastEditDate;
 	}
@@ -56,11 +57,17 @@ public class Post {
 	public void setLastEditDate(@Nullable Date lastEditDate) {
 		this.lastEditDate = lastEditDate;
 	}
-	public int getLikes() {
-		return likes;
+	public String getIsDeleted() {
+		return isDeleted;
 	}
-	public void setLikes(int likes) {
-		this.likes = likes;
+	public void setIsDeleted(String isDeleted) {
+		this.isDeleted = isDeleted;
+	}
+	public int getPostLikes() {
+		return postLikes;
+	}
+	public void setPostLikes(int postLikes) {
+		this.postLikes = postLikes;
 	}
 	public int getReactions() {
 		return reactions;
@@ -68,10 +75,12 @@ public class Post {
 	public void setReactions(int reactions) {
 		this.reactions = reactions;
 	}
-	public boolean isLikedByYou() {
+	@Nullable
+	public Boolean getLikedByYou() {
 		return likedByYou;
 	}
-	public void setLikedByYou(boolean likedByYou) {
+	public void setLikedByYou(@Nullable Boolean likedByYou) {
 		this.likedByYou = likedByYou;
 	}
+	
 }

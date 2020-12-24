@@ -9,24 +9,56 @@
 		SELECT  id,
 				text,
 				author,
-				(SELECT COUNT(post)
+				postDate,
+				lastEditDate,
+				(SELECT COUNT(*)
 				   FROM postlikes
-				  WHERE	post = #{id}) likes,
-				(SELECT COUNT(post)
+				  WHERE	post = #{id}) postLikes,
+				(SELECT COUNT(*)
 				   FROM	reactions
  				  WHERE	post = #{id}) reactions,
- 				(SELECT COUNT(post)
+ 				(SELECT COUNT(*)
  				   FROM	postlikes
- 				  WHERE	userId = #{userId}
+ 				  WHERE	userId = #{loginUser, jdbcType=INTEGER}
  				  	AND	post = #{id}) likedByYou
 		  FROM	posts
 		 WHERE	id = #{id} 	
 	</select>
 	
+	<select id="generatePostId"
+	        resultType="Integer">
+		SELECT seq_posts.nextval
+		  FROM dual
+	</select>
+	
 	<insert id="writePost"
 	 		parameterType="map">
-		INSERT INTO posts(text, author)
-		VALUES (#{text}, #{loginUser})
+		INSERT INTO posts(id, text, author)
+		VALUES (#{postId}, #{text}, #{loginUser})
 	</insert>
-
+	
+	<select id="findPostData"
+			parameterType="Integer"
+			resultType="Post">
+		SELECT *
+		  FROM posts
+		 WHERE id = #{post}
+		   AND isdeleted = 'N'
+	</select>
+	
+	<update id="editPost"
+			parameterType="map">
+		UPDATE posts
+		   SET text = #{text}
+		 WHERE id = #{post}
+	</update>
+	
+	<update id="deletePost"
+			parameterType="Integer">
+		UPDATE posts
+		   SET isdeleted = 'Y'
+		 WHERE id = #{post}
+	</update>
+	
+	
 </mapper>
