@@ -56,6 +56,10 @@ public class UserService{
 		return result!=0;
 	}
 
+	public boolean checkIfUserExists(int author){
+		return dao.checkIfUserExists(author);
+	}
+
 
 	public static class SetPasswordResult{
 		@Nullable private String error;

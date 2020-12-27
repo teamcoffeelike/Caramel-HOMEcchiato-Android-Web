@@ -30,12 +30,12 @@ public class JoinController{
 	 * 이메일을 사용한 회원가입<br>
 	 * <br>
 	 * <b>성공 시:</b>
-	 *
-	 * <pre>
-	 * <code> {
+	 * <pre>{@code
+	 * {
 	 *   userId: Integer
-	 * }</code>
-	 * </pre>
+	 *   authToken: UUID
+	 * }
+	 * }</pre>
 	 *
 	 * <b>에러: </b><br>
 	 * bad_name     : 유효하지 않은 이름<br>
@@ -45,11 +45,10 @@ public class JoinController{
 	 */
 	@ResponseBody
 	@RequestMapping("/joinWithEmail")
-	public String joinWithEmail(
-			HttpSession session,
-			@RequestParam String name,
-			@RequestParam String email,
-			@RequestParam String password){
+	public String joinWithEmail(HttpSession session,
+	                            @RequestParam String name,
+	                            @RequestParam String email,
+	                            @RequestParam String password){
 		if(!Validate.name(name)) return JsonHelper.failure("bad_email");
 		if(!Validate.email(email)) return JsonHelper.failure("bad_email");
 		if(!Validate.password(password)) return JsonHelper.failure("bad_password");
@@ -65,12 +64,12 @@ public class JoinController{
 	 * 휴대폰 전화번호를 사용한 회원가입<br>
 	 * <br>
 	 * <b>성공 시:</b>
-	 *
-	 * <pre>
-	 * <code> {
+	 * <pre>{@code
+	 * {
 	 *   userId: Integer
-	 * }</code>
-	 * </pre>
+	 *   authToken: UUID
+	 * }
+	 * }</pre>
 	 *
 	 * <b>에러: </b><br>
 	 * bad_name         : 유효하지 않은 이름<br>
@@ -80,11 +79,10 @@ public class JoinController{
 	 */
 	@ResponseBody
 	@RequestMapping("/joinWithPhoneNumber")
-	public String joinWithPhoneNumber(
-			HttpSession session,
-			@RequestParam String name,
-			@RequestParam String phoneNumber,
-			@RequestParam String password){
+	public String joinWithPhoneNumber(HttpSession session,
+	                                  @RequestParam String name,
+	                                  @RequestParam String phoneNumber,
+	                                  @RequestParam String password){
 		if(!Validate.name(name)) return JsonHelper.failure("bad_email");
 		if(!Validate.phoneNumber(phoneNumber)) return JsonHelper.failure("bad_email");
 		if(!Validate.password(password)) return JsonHelper.failure("bad_password");

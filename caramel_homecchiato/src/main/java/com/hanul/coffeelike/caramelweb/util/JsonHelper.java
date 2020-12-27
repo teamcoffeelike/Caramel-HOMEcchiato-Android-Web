@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.hanul.coffeelike.caramelweb.data.FollowNotification;
 import com.hanul.coffeelike.caramelweb.data.LikeNotification;
 import com.hanul.coffeelike.caramelweb.data.ReactionNotification;
+import com.hanul.coffeelike.caramelweb.data.RecipeCategory;
 
 /**
  * 귀찮은 Gson 인스턴스를 거치지 않고 JSON 객체를 생성할 수 있도록 하는 유틸리티 클래스.
@@ -16,10 +17,11 @@ public final class JsonHelper {
 			.registerTypeAdapter(FollowNotification.class, FollowNotification.Json.INSTANCE)
 			.registerTypeAdapter(LikeNotification.class, LikeNotification.Json.INSTANCE)
 			.registerTypeAdapter(ReactionNotification.class, ReactionNotification.Json.INSTANCE)
+			.registerTypeAdapter(RecipeCategory.class, RecipeCategory.Json.INSTANCE)
 			.create();
 
 	/**
-	 * {@code success} 키 값으로 {@code false}를 가지며 {@code error} 키 값으로 전달받은 에러 메시지를 가지는 JSON 오브젝트를 텍스트 형태로 반환합니다.
+	 * {@code error} 키 값으로 전달받은 에러 메시지를 가지는 JSON 오브젝트를 텍스트 형태로 반환합니다.
 	 * @param error 에러 메시지
 	 * @return 텍스트 형태의 JSON
 	 */

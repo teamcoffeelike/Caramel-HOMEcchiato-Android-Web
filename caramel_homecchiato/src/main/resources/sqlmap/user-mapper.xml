@@ -54,6 +54,7 @@
 		SELECT password
 		  FROM users
 		 WHERE id = #{userId}
+           AND isDeleted = 'N'
 	</select>
 
 	<update id="setPassword"
@@ -61,6 +62,7 @@
 		UPDATE users
 		   SET password = #{newPassword}
 		 WHERE id = #{userId}
+           AND isDeleted = 'N'
 	</update>
 
 	<select id="getFollower"
@@ -69,7 +71,7 @@
 		SELECT f.userId id,
 		       u.name name,
 		       u.profileImage profileImage
-		  FROM follows f JOIN users u ON f.userId = u.id
+		  FROM follows f JOIN users u ON f.userId = u.id AND u.isDeleted = 'N'
 		 WHERE f.following = #{it}
 	</select>
 
@@ -91,6 +93,15 @@
 		UPDATE users
 		   SET ${type} = #{value}
 		 WHERE id = #{user}
+           AND isDeleted = 'N'
 	</update>
+
+	<select id="checkIfUserExists"
+			parameterMap="Integer">
+		SELECT id
+          FROM users
+         WHERE id = #{it}
+           AND isDeleted = 'N'
+	</select>
 
 </mapper>

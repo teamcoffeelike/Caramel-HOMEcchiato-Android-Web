@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="recipe">
+    <sql id="recipeCover">
+        ${recipes}.id,
+        ${recipes}.category,
+        ${recipes}.title,
+        ${recipes}.coverImage,
+        ${recipes}.author,
+        ${recipes}.postDate,
+        ${recipes}.lastEditDate,
+        (SELECT COUNT(*)
+           FROM recipeRatings
+          WHERE recipe = ${table}.id) ratings,
+        (SELECT AVG(rating)
+           FROM recipeRatings
+          WHERE recipe = ${table}.id) averageRating
+    </sql>
+
+    <select id="list"
+            parameterType="map"
+            resultType="RecipeCover">
+        SELECT <include refid="recipeCover">
+                 <property name="recipes" value="r"/>
+               </include>
+          FROM recipes r
+         WHERE isDeleted = 'N'
+           AND (#{category, jdbcType=VARCHAR} IS NULL
+               OR category = #{category, jdbcType=VARCHAR})
+           AND (#{author, jdbcType=INTEGER} IS NULL
+               OR author = #{author, jdbcType=INTEGER})
+         ORDER BY postDate DESC
+    </select>
+
+    <select id="getCover"
+            resultType="RecipeCover">
+        SELECT <include refid="recipeCover">
+                 <property name="table" value="r"/>
+               </include>
+          FROM recipes r
+         WHERE isDeleted = 'N'
+           AND id = #{id}
+    </select>
+
+    <select id="steps"
+            resultType="map">
+        SELECT ordinal index,
+               image,
+               text
+          FROM steps s
+         WHERE recipe = #{recipe}
+         ORDER BY ordinal
+    </select>
+
+    <select id="checkIfRecipeExists"
+            parameterType="Integer">
+        SELECT id
+          FROM recipes
+         WHERE isDeleted = 'N'
+           AND id = #{id}
+    </select>
+
+</mapper>

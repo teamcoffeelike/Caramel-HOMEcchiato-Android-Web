@@ -34,13 +34,12 @@ public class LoginController{
 	 * 이메일을 사용한 로그인<br>
 	 * <br>
 	 * <b>성공 시:</b>
-	 *
-	 * <pre>
-	 * <code>{
+	 * <pre>{@code
+	 * {
 	 *   userId: Integer
 	 *   authToken: UUID
-	 * }</code>
-	 * </pre>
+	 * }
+	 * }</pre>
 	 *
 	 * <b>에러: </b><br>
 	 * bad_email : 유효하지 않은 email 인자<br>
@@ -62,14 +61,13 @@ public class LoginController{
 	/**
 	 * 폰 사용한 로그인<br>
 	 * <br>
-	 * <b>성공 시:</b>
-	 *
-	 * <pre>
-	 * <code>{
+	 * <b>성공 시:</b><br>
+	 * <pre>{@code
+	 * {
 	 *   userId: Integer
 	 *   authToken: UUID
-	 * }</code>
-	 * </pre>
+	 * }
+	 * }</pre>
 	 *
 	 * <b>에러: </b><br>
 	 * bad_phone_number : 유효하지 않은 phoneNumber 인자<br>
@@ -91,10 +89,10 @@ public class LoginController{
 	/**
 	 * 로그아웃<br>
 	 * <br>
-	 * <b>성공 시:</b>
-	 *
-	 * <pre>추가 데이터 없음
-	 * </pre>
+	 * <b>성공 시:</b><br>
+	 * <pre>{@code
+	 * 추가 데이터 없음
+	 * }</pre>
 	 *
 	 * <b>에러: </b><br>
 	 * not_logged_in : 로그인 상태가 아님<br>
@@ -114,13 +112,12 @@ public class LoginController{
 	 * 인증 토큰을 사용한 로그인<br>
 	 * <br>
 	 * <b>성공 시:</b>
-	 *
-	 * <pre>
-	 * <code>{
+	 * <pre>{@code
+	 * {
 	 *   userId: Integer
 	 *   authToken: UUID
-	 * }</code>
-	 * </pre>
+	 * }
+	 * }</pre>
 	 *
 	 * <b>에러: </b><br>
 	 * bad_auth_token : 유효하지 않은 authToken 인자<br>
