@@ -5,13 +5,13 @@ import java.util.regex.Pattern;
 public final class Validate{
 	private Validate(){}
 
-	private static final Pattern EMAIL_NAME = Pattern.compile("[^\t\n]{1,25}");
+	private static final Pattern NAME_REGEX = Pattern.compile("[^\t\n]{1,40}");
 	private static final Pattern EMAIL_REGEX = Pattern.compile("[^@]+@[^@]+");
 	private static final Pattern PHONE_NUMBER_REGEX = Pattern.compile("\\d{3}[ -]?\\d{4}[ -]?\\d{4}");
 	private static final Pattern PASSWORD_REGEX = Pattern.compile("\\S{3,63}");
 
 	public static boolean name(String name){
-		return EMAIL_NAME.matcher(name).matches();
+		return NAME_REGEX.matcher(name).matches();
 	}
 	public static boolean email(String email){
 		return EMAIL_REGEX.matcher(email).matches();
