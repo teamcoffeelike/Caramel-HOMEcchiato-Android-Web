@@ -32,8 +32,11 @@ public class PostDAO {
 		return sql.insert("post.writePost", m);
 	}
 	
-	public Post findPostData(int post) {
-		return sql.selectOne("post.findPostData", post);
+	public Post findPostData(int loginUser, int post) {
+		HashMap<String, Integer> m = new HashMap<String, Integer>();
+		m.put("loginUser", loginUser);
+		m.put("post", post);
+		return sql.selectOne("post.findPostData", m);
 	}
 	
 	public void editPost(int post, String text) {
@@ -46,7 +49,7 @@ public class PostDAO {
 	public void deletePost(int post) {
 		sql.update("post.deletePost", post);
 	}
-	
+
 	public void likePost() {
 		//like update
 	}
@@ -54,5 +57,6 @@ public class PostDAO {
 	public void topPosts() {
 		//like select > dense rank 
 	}
+
 	
 }

@@ -41,7 +41,7 @@
 			parameterType="Integer"
 			resultType="Post">
 		SELECT *
-		  FROM posts
+		  FROM posts 
 		 WHERE id = #{post}
 		   AND isdeleted = 'N'
 	</select>

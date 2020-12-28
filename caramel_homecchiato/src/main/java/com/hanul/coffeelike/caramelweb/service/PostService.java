@@ -23,7 +23,7 @@ public class PostService {
 	}
 	
 	public PostResult editPost(int loginUser, int post, String text) {
-		Post postData = dao.findPostData(post);
+		Post postData = dao.findPostData(loginUser, post);
 
 		if(postData==null)
 			return new PostResult("no_post");
@@ -35,7 +35,7 @@ public class PostService {
 	}
 	
 	public PostResult deletePost(int loginUser, int post) {
-		Post postData = dao.findPostData(post);
+		Post postData = dao.findPostData(loginUser, post);
 		
 		if(postData == null)
 			return new PostResult("no_post");
@@ -46,8 +46,14 @@ public class PostService {
 		return new PostResult();
 	}
 	
-	public void likePost() {
+	public PostResult likePost(int loginUser, int post) {
+		Post postData = dao.findPostData(loginUser, post);
 		
+		if(postData == null)
+			return new PostResult("no_post");
+		
+		dao.likePost();
+		return new PostResult();
 	}
 	
 	public void topPosts() {

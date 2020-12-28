@@ -167,11 +167,11 @@ public class PostController {
 			@RequestParam int post,
 			@RequestParam boolean like
 		) {
-		JsonObject o = new JsonObject();
-		o.addProperty("success", "true");
-		o.addProperty("userId", 1231231323);
+		Integer loginUser = (Integer)session.getAttribute("loginUser");
+		if (loginUser == null) return JsonHelper.failure("not_logged_in");
+		service.likePost(loginUser, post);
 		
-		return JsonHelper.GSON.toJson(o);
+		return JsonHelper.GSON.toJson(new JsonObject());
 	}
 
 	/**
@@ -189,11 +189,8 @@ public class PostController {
 	public String topPosts(
 			HttpSession session
 	) {
-		JsonObject o = new JsonObject();
-		o.addProperty("success", "true");
-		o.addProperty("userId", 1231231323);
 		
-		return JsonHelper.GSON.toJson(o);
+		return JsonHelper.GSON.toJson(new JsonObject());
 	}
 	
 }
